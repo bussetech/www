@@ -1,0 +1,24 @@
+# ci — the studio's shared site CI (bussetech/ci, ADR-0011), offline build.
+#
+# CI builds with fixture data (scripts/build-site.sh --offline): hermetic, no
+# secrets, proves every template renders and every internal link resolves.
+# The LIVE data path is proven daily by the deploy build (--require-live) and
+# the platform chain test (platform-e2e), not here.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  site:
+    # Skips (green) outside the org so a detached repo degrades gracefully.
+    if: ${{ github.repository_owner == 'bussetech' }}
+    uses: bussetech/ci/.github/workflows/reusable-site-ci.yml@v1
+    with:
+      visibility: public
+      build_command: scripts/build-site.sh --offline

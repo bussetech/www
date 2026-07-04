@@ -1,0 +1,16 @@
+# editorial.yml — the homepage's short editorial voice.
+#
+# Maintained by gn_portal_editor ("Gnome Portal Editor"), which reviews the
+# aggregated project feeds daily and refreshes these blurbs via PR — it never
+# pushes to main. Humans may edit too; the gnome treats the current content
+# as prior art, not as something to clobber.
+#
+#   featured        name of a listed repo to feature on the homepage ("" = none)
+#   featured_note   one or two sentences on why it's featured right now
+#   week_note       "this week in the studio" — a few plain sentences, no hype
+#   updated         ISO date of the last editorial pass
+
+featured: ""
+featured_note: ""
+week_note: ""
+updated: ""

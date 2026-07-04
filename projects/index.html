@@ -1,0 +1,19 @@
+---
+layout: page
+title: Projects
+eyebrow: Directory
+description: Every listed project in the studio, straight from the studio registry.
+permalink: /projects/
+---
+{%- assign registry = site.data.studio.registry -%}
+{%- assign listed = registry.repos | where: "listed", true -%}
+
+{%- if listed.size > 0 -%}
+<div class="grid grid--3">
+  {%- for p in listed -%}
+  {% include project-card.html project=p %}
+  {%- endfor -%}
+</div>
+{%- else -%}
+<p>No projects listed yet. Projects register in the studio's <code>platform.yml</code> and appear here on the next build.</p>
+{%- endif -%}

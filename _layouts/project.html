@@ -1,0 +1,70 @@
+---
+layout: page
+---
+{%- comment -%}
+  Project detail page. The page stubs under projects/<name>/ are GENERATED at
+  build time from the studio registry (scripts/build_data.py); everything
+  rendered here comes from _data/studio/*. Visibility tiers (ADR-0006):
+  public → site + repo links; private-published → site link + "source:
+  private" chip; private-but-listed → name/description only. repo_url exists
+  in the data only for public repos, so a private repo link cannot render.
+{%- endcomment -%}
+{%- assign registry = site.data.studio.registry -%}
+{%- assign p = registry.repos | where: "name", page.project | first -%}
+
+{%- if p -%}
+<div class="stack">
+  <p>
+    {% include status-chip.html status=p.status label=p.status_label %}
+    {%- if p.visibility != "public" -%}
+    <span class="visibility visibility--private" title="Source repository is private">source: private</span>
+    {%- endif -%}
+  </p>
+
+  {%- if p.site_url or p.repo_url %}
+  <p>
+    {%- if p.site_url -%}
+    <a class="btn" href="{{ p.site_url }}">Visit {{ p.name }}{% if p.subdomain and p.subdomain != "@" %} — {{ p.subdomain }}.{{ registry.domain }}{% endif %}</a>
+    {%- endif %}
+    {%- if p.repo_url %}
+    <a class="btn btn--ghost" href="{{ p.repo_url }}">Source on GitHub</a>
+    {%- endif %}
+  </p>
+  {%- endif %}
+
+  {%- assign project_gnomes = "" | split: "" -%}
+  {%- for g in site.data.studio.gnomes.gnomes -%}
+  {%- if g.deployments contains p.name -%}
+  {%- assign project_gnomes = project_gnomes | push: g -%}
+  {%- endif -%}
+  {%- endfor -%}
+  <section aria-label="Gnomes">
+    <h2>Gnomes at work here</h2>
+    {%- if project_gnomes.size > 0 -%}
+    <div class="grid grid--3">
+      {%- for g in project_gnomes -%}
+      {% include gnome-card.html gnome=g %}
+      {%- endfor -%}
+    </div>
+    {%- else -%}
+    <p>No gnomes deployed to this project yet.</p>
+    {%- endif -%}
+  </section>
+
+  {%- assign project_items = site.data.studio.feed.items | where: "source", p.name -%}
+  <section class="feed" aria-label="Latest from this project">
+    <h2>Latest</h2>
+    {%- if project_items.size > 0 -%}
+    {%- for item in project_items limit: 10 -%}
+    {% include feed-item.html item=item %}
+    {%- endfor -%}
+    {%- elsif p.site_url -%}
+    <p>No feed items yet{% if p.lifecycle == "active" %} — this project publishes updates at <a href="{{ p.site_url }}/feed.json">{{ p.site_url }}/feed.json</a>{% endif %}.</p>
+    {%- else -%}
+    <p>This project has no published site.</p>
+    {%- endif -%}
+  </section>
+</div>
+{%- else -%}
+<p>This project is not in the studio registry. If it was recently removed, this page disappears on the next portal build.</p>
+{%- endif -%}

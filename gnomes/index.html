@@ -1,0 +1,43 @@
+---
+layout: page
+title: Gnomes
+eyebrow: Directory
+description: The studio is where the gnomes work — every agent in the registry, platform and project.
+permalink: /gnomes/
+---
+{%- assign gnomes = site.data.studio.gnomes.gnomes -%}
+
+{%- if gnomes and gnomes.size > 0 -%}
+<p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. All of them live in the same registry, honor the same contract, and leave the same receipts.</p>
+
+{%- assign platform_gnomes = gnomes | where: "level", "platform" -%}
+{%- assign project_gnomes = gnomes | where: "level", "project" -%}
+
+<section aria-label="Platform gnomes">
+  <h2>Platform gnomes</h2>
+  {%- if platform_gnomes.size > 0 -%}
+  <div class="grid grid--3">
+    {%- for g in platform_gnomes -%}
+    {% include gnome-card.html gnome=g %}
+    {%- endfor -%}
+  </div>
+  {%- else -%}
+  <p>None yet.</p>
+  {%- endif -%}
+</section>
+
+<section aria-label="Project gnomes">
+  <h2>Project gnomes</h2>
+  {%- if project_gnomes.size > 0 -%}
+  <div class="grid grid--3">
+    {%- for g in project_gnomes -%}
+    {% include gnome-card.html gnome=g %}
+    {%- endfor -%}
+  </div>
+  {%- else -%}
+  <p>None yet — the first project gnomes arrive with the first projects.</p>
+  {%- endif -%}
+</section>
+{%- else -%}
+<p>The gnome registry is empty or unavailable. Gnomes register in the studio's <code>gnomes.yml</code> and appear here on the next build.</p>
+{%- endif -%}

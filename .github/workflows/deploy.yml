@@ -1,0 +1,89 @@
+# deploy — build the portal from live studio state and publish to Pages.
+#
+# The portal is a renderer: every build fetches platform.yml + gnomes.yml
+# from the control repo (read-only gnome-App token), pulls every registered
+# project feed, and derives studio status. A fetch failure fails the build
+# (--require-live): better to keep serving the last good site than to
+# publish stubs.
+#
+# Rebuild triggers:
+#   - push to main (portal content changed)
+#   - daily cron (feeds + status refresh even when nothing pushed)
+#   - repository_dispatch `studio-content-updated` — THE studio convention:
+#     project repos and gnomes ping this event when their content changes
+#     (docs in platform/docs/feeds.md)
+#   - manual dispatch
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 9 * * *" # daily 09:17 UTC, after uat (07:27) and platform-e2e (08:47)
+  repository_dispatch:
+    types: [studio-content-updated]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # Outside the studio org this repo still builds (offline mode, see ci.yml);
+    # only the studio's own deploy needs live state + Pages.
+    if: ${{ github.repository_owner == 'bussetech' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint read-only studio token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.GNOME_APP_ID }}
+          private-key: ${{ secrets.GNOME_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          # Downscoped: the portal build only ever READS — registry/manifests
+          # (contents) and health signals (issue labels). Org-wide because UAT
+          # failures live on the offending repo, not here.
+          permission-contents: read
+          permission-issues: read
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.2.2
+
+      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+
+      - name: Build portal (live studio state)
+        env:
+          STUDIO_TOKEN: ${{ steps.app-token.outputs.token }}
+          STUDIO_PLATFORM_REPO: ${{ github.repository_owner }}/platform
+        run: scripts/build-site.sh --require-live
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: ${{ github.repository_owner == 'bussetech' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

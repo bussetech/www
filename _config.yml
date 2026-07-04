@@ -1,0 +1,50 @@
+# www — the studio portal, served at the apex domain.
+#
+# The portal is a RENDERER, not a second source of truth: every project,
+# gnome, feed item, and status signal on it derives from machine-readable
+# state fetched at build time (scripts/build-data.py). Nothing here maintains
+# a project list by hand.
+#
+# The values below are the DETACHED-BUILD FALLBACK ONLY. A real build overlays
+# `_config.studio.yml`, generated at build time from the control repo's
+# platform.yml (branding, domain, analytics beacon) — the overlay wins, so the
+# authoritative branding always comes from platform.yml, never from here.
+title: bussetech software studio
+description: "The studio portal: every project, every gnome, and the latest across the studio's sites."
+lang: en
+url: "https://bussetech.com" # overlaid from platform.yml domain at build
+baseurl: ""
+
+remote_theme: bussetech/theme@v0.2.0 # www is the canary for 0.2.0 (gnome-card purpose/deployments)
+plugins:
+  - jekyll-remote-theme
+
+studio:
+  # Fallback studio contract; _config.studio.yml (generated from platform.yml)
+  # overrides logotype/org/domain/analytics_beacon on every real build.
+  logotype: "bussetech | software studio"
+  org: bussetech
+  domain: bussetech.com
+  visibility: public
+  is_portal: true # the portal is the studio, not "a … project" of it
+  theme_color: "#FFFFFF"
+  analytics_beacon: "" # minted by the DNS steward into platform.yml; injected at build
+  nav:
+    - title: Home
+      url: /
+    - title: Projects
+      url: /projects/
+    - title: Gnomes
+      url: /gnomes/
+
+markdown: kramdown
+sass:
+  style: compressed
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - scripts/
+  - README.md
+  - CLAUDE.md

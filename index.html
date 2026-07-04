@@ -1,0 +1,66 @@
+---
+layout: home
+title: where the gnomes work
+description: "The studio portal: every project, every gnome, and the latest across the studio's sites."
+---
+{%- assign registry = site.data.studio.registry -%}
+{%- assign studio_status = site.data.studio.status -%}
+{%- assign feed = site.data.studio.feed -%}
+{%- assign editorial = site.data.editorial -%}
+
+<section aria-label="Studio status">
+  <p>
+    {% include status-chip.html status=studio_status.heartbeat.status label=studio_status.heartbeat.label %}
+    {% include status-chip.html status=studio_status.uat.status label=studio_status.uat.label %}
+    {% include status-chip.html status=studio_status.gnomes.status label=studio_status.gnomes.label %}
+  </p>
+</section>
+
+{%- if editorial.week_note and editorial.week_note != "" %}
+<section aria-label="This week in the studio">
+  {% include callout.html label="This week in the studio" body=editorial.week_note %}
+</section>
+{%- endif %}
+
+<section aria-label="Projects">
+  <h2>Projects</h2>
+  {%- assign listed = registry.repos | where: "listed", true -%}
+  {%- if listed.size > 0 -%}
+  {%- assign featured = nil -%}
+  {%- if editorial.featured and editorial.featured != "" -%}
+  {%- assign featured = listed | where: "name", editorial.featured | first -%}
+  {%- endif -%}
+  {%- if featured %}
+  <div class="grid grid--2">
+    {% include project-card.html project=featured %}
+    <div class="prose">
+      <p class="eyebrow">Featured</p>
+      {%- if editorial.featured_note and editorial.featured_note != "" -%}
+      <p>{{ editorial.featured_note }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endif %}
+  <div class="grid grid--3">
+    {%- for p in listed -%}
+    {%- unless featured and p.name == featured.name -%}
+    {% include project-card.html project=p %}
+    {%- endunless -%}
+    {%- endfor -%}
+  </div>
+  <p><a class="btn btn--ghost" href="{{ '/projects/' | relative_url }}">All projects</a></p>
+  {%- else -%}
+  <p>No projects listed yet.</p>
+  {%- endif -%}
+</section>
+
+<section class="feed" aria-label="Latest across the studio">
+  <h2>Latest across the studio</h2>
+  {%- if feed.items.size > 0 -%}
+  {%- for item in feed.items limit: 10 -%}
+  {% include feed-item.html item=item %}
+  {%- endfor -%}
+  {%- else -%}
+  <p>Nothing aggregated yet — project sites publish <code>/feed.json</code> and their updates appear here.</p>
+  {%- endif -%}
+</section>

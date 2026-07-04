@@ -1,0 +1,15 @@
+# Build outputs
+_site/
+.jekyll-cache/
+.sass-cache/
+vendor/
+.bundle/
+
+# Generated at build time by scripts/build_data.py — never committed: the
+# portal renders live studio state, it does not vendor a copy of it.
+_data/studio/
+_config.studio.yml
+projects/*/
+
+# Local tooling
+scripts/.venv/
