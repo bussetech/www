@@ -24,7 +24,8 @@ description: "The studio portal: every project, every gnome, and the latest acro
 
 <section aria-label="Projects">
   <h2>Projects</h2>
-  {%- assign listed = registry.repos | where: "listed", true -%}
+  {%- comment -%} Archived projects live in /projects/'s archive section, not here. {%- endcomment -%}
+  {%- assign listed = registry.repos | where: "listed", true | where_exp: "p", "p.lifecycle != 'archived'" -%}
   {%- if listed.size > 0 -%}
   {%- assign featured = nil -%}
   {%- if editorial.featured and editorial.featured != "" -%}

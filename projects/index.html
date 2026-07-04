@@ -7,13 +7,27 @@ permalink: /projects/
 ---
 {%- assign registry = site.data.studio.registry -%}
 {%- assign listed = registry.repos | where: "listed", true -%}
+{%- assign archived = listed | where: "lifecycle", "archived" -%}
+{%- assign current = listed | where_exp: "p", "p.lifecycle != 'archived'" -%}
 
-{%- if listed.size > 0 -%}
+{%- if current.size > 0 -%}
 <div class="grid grid--3">
-  {%- for p in listed -%}
+  {%- for p in current -%}
   {% include project-card.html project=p %}
   {%- endfor -%}
 </div>
 {%- else -%}
 <p>No projects listed yet. Projects register in the studio's <code>platform.yml</code> and appear here on the next build.</p>
+{%- endif -%}
+
+{%- if archived.size > 0 %}
+<section aria-label="Archive">
+  <h2>Archive</h2>
+  <p>Retired projects. Their repos are archived and their sites are no longer served; the record stays.</p>
+  <div class="grid grid--3">
+    {%- for p in archived -%}
+    {% include project-card.html project=p %}
+    {%- endfor -%}
+  </div>
+</section>
 {%- endif -%}

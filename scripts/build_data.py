@@ -148,6 +148,10 @@ def normalize_registry(platform: dict, source: str) -> dict:
         # `private` never has a public site either — belt and braces.
         if visibility == "private":
             entry["site_url"] = None
+        # Retired projects (EPIC1-08): the site is torn down, so never link
+        # it — the portal's archive section shows the record, not a dead URL.
+        if lifecycle == "archived":
+            entry["site_url"] = None
         repos.append(entry)
     return {
         "source": source,
