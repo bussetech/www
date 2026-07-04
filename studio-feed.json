@@ -1,0 +1,40 @@
+---
+permalink: /studio-feed.json
+# The studio-wide aggregate: every project feed the portal merged at its last
+# build, as JSON Feed 1.1 (custom fields underscore-prefixed per spec).
+# Consumers: gn_portal_editor (editorial pass), anyone wanting "everything
+# the studio published" in one place. The portal's OWN news stays /feed.json.
+---
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": {{ site.title | append: " — everything across the studio" | jsonify }},
+  "home_page_url": {{ '/' | absolute_url | jsonify }},
+  "feed_url": {{ '/studio-feed.json' | absolute_url | jsonify }},
+  "description": "All project feeds registered in the studio, merged at portal build time.",
+  "_studio": {
+    "generated_from": {{ site.data.studio.registry.source | jsonify }},
+    "projects": [
+      {%- assign listed = site.data.studio.registry.repos | where: "listed", true -%}
+      {%- for p in listed -%}
+      {
+        "name": {{ p.name | jsonify }},
+        "description": {{ p.description | jsonify }},
+        "lifecycle": {{ p.lifecycle | jsonify }},
+        "site_url": {{ p.site_url | jsonify }}
+      }{%- unless forloop.last %},{% endunless -%}
+      {%- endfor -%}
+    ]
+  },
+  "items": [
+    {%- for item in site.data.studio.feed.items -%}
+    {
+      "id": {{ item.url | jsonify }},
+      "url": {{ item.url | jsonify }},
+      "title": {{ item.title | jsonify }},
+      "date_published": {{ item.date | jsonify }},
+      "content_text": {{ item.summary | jsonify }},
+      "_source": {{ item.source | jsonify }}
+    }{%- unless forloop.last %},{% endunless -%}
+    {%- endfor -%}
+  ]
+}
