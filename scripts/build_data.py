@@ -421,7 +421,9 @@ def main() -> int:
     (DATA_DIR / "gnomes.json").write_text(json.dumps(gnomes, indent=2), encoding="utf-8")
     (DATA_DIR / "feed.json").write_text(json.dumps(feed, indent=2), encoding="utf-8")
     (DATA_DIR / "status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
-    if registry["repos"]:
+    # The branding overlay only makes sense with a real studio behind it —
+    # fixture data must not blank out the committed fallback config.
+    if registry["domain"]:
         write_overlay(registry)
     elif OVERLAY.exists():
         OVERLAY.unlink()
