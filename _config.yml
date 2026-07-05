@@ -15,7 +15,7 @@ lang: en
 url: "https://bussetech.com" # overlaid from platform.yml domain at build
 baseurl: ""
 
-remote_theme: bussetech/theme@v0.3.0 # www is the canary for 0.3.0 (footer legal copyright)
+remote_theme: bussetech/theme@v0.4.2 # current studio theme (footer legal copyright + token fixes)
 plugins:
   - jekyll-remote-theme
 
