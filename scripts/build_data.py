@@ -124,6 +124,13 @@ def normalize_registry(platform: dict, source: str) -> dict:
     for r in platform.get("repos", []):
         visibility = r.get("visibility", "private")
         lifecycle = r.get("status", "planned")
+        # Simulation exclusion (EPIC1-11, platform docs/simulations.md):
+        # synthetic sim-harness repos never reach the portal data at all —
+        # no card, no detail stub, no feed fetch — REGARDLESS of `listed`.
+        # Enforced at the data layer like the leak rule; the sim- name
+        # check is belt and braces for a sim entry with a mangled status.
+        if lifecycle == "simulation" or str(r.get("name", "")).startswith("sim-"):
+            continue
         listed = bool(r.get("listed", False))
         entry = {
             "name": r["name"],
