@@ -275,6 +275,9 @@ def write_overlay(registry: dict) -> None:
             "org": registry["org"],
             "domain": registry["domain"],
             "analytics_beacon": me.get("analytics_beacon", "") or "",
+            # Legal identity (EPIC2-01): the footer copyright derives from
+            # platform.yml branding.legal, never hardcoded in the portal.
+            "legal": registry.get("branding", {}).get("legal", {}),
         },
     }
     OVERLAY.write_text(
