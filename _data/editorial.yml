@@ -10,7 +10,7 @@
 #   week_note       "this week in the studio" — a few plain sentences, no hype
 #   updated         ISO date of the last editorial pass
 
-featured: ""
-featured_note: ""
-week_note: ""
-updated: "2026-07-04"
+featured: "kdc"
+featured_note: "New this week: kdc launched with a seed dataset of 33 data-center project-sites across seven states, sourced from 183 signals, and now has a filterable map with a locator on every record page."
+week_note: "kdc joined the studio this week and moved fast: a founding dataset of 33 project-sites went live, sourced and cross-checked from 183 signals, followed by a map view with status-coloured, filterable markers. The portal itself had a quiet week otherwise."
+updated: "2026-07-06"
