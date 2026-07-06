@@ -15,7 +15,7 @@ lang: en
 url: "https://bussetech.com" # overlaid from platform.yml domain at build
 baseurl: ""
 
-remote_theme: bussetech/theme@v0.4.2 # current studio theme (footer legal copyright + token fixes)
+remote_theme: bussetech/theme@v0.6.0 # signup capture block (EPIC3-03); canary bump from v0.4.2
 plugins:
   - jekyll-remote-theme
 
@@ -29,15 +29,12 @@ studio:
   is_portal: true # the portal is the studio, not "a … project" of it
   theme_color: "#FFFFFF"
   analytics_beacon: "" # minted by the DNS steward into platform.yml; injected at build
-  # Email capture (platform EPIC3-03, #98; ADR-0034). DORMANT until go-live:
-  # the canary PR bumps remote_theme to the release carrying signup.html, sets
-  # `action` to the real Buttondown endpoint, and flips `enabled: true`. While
-  # enabled is false the homepage guard never resolves the include, so the
-  # build stays green on the current theme pin. Provider holds the PII; this
-  # repo holds only the aggregate count.
+  # Email capture (platform EPIC3-03, #98; ADR-0034). LIVE (canary). The form
+  # POSTs straight to Buttondown; the provider holds the PII, this repo holds
+  # only the aggregate count. Double opt-in + open-tracking-off are provider-side.
   signup:
-    enabled: false
-    action: "https://buttondown.com/api/emails/embed-subscribe/PLACEHOLDER" # set at go-live
+    enabled: true
+    action: "https://buttondown.com/api/emails/embed-subscribe/bussetech"
     email_field: email
     heading: "Get studio updates"
     value_prop: "One human, a workforce of gnomes, every run receipted. Occasional notes on what the studio shipped — no spam, no tracking."
