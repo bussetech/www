@@ -207,6 +207,39 @@ def fetch_feeds(registry: dict) -> dict:
     return {"items": items[:50], "sources": sources}
 
 
+# ── knolls (platform ADR-0033, www#19) ──────────────────────────────────────
+
+def fetch_knolls(gnomes: dict, platform_repo: str | None, tok: str | None) -> list[dict]:
+    """Knoll groupings for the gnome directory. The registry's `knoll:` field
+    on each gnome is the grouping key (first appearance sets the order); the
+    knoll manifest's `purpose` is display copy. Best-effort: a missing or
+    unreadable manifest renders the group with its name only, never fails
+    the build."""
+    names: list[str] = []
+    for g in gnomes.get("gnomes", []):
+        k = g.get("knoll")
+        if k and k not in names:
+            names.append(k)
+    local_state = os.environ.get("STUDIO_LOCAL_STATE")
+    knolls = []
+    for name in names:
+        entry = {"name": name, "purpose": ""}
+        rel = f"knolls/{name}/knoll.yml"
+        try:
+            if local_state:
+                manifest = yaml.safe_load(
+                    (pathlib.Path(local_state) / rel).read_text(encoding="utf-8"))
+            elif tok and platform_repo:
+                manifest = fetch_yaml(platform_repo, rel, tok)
+            else:
+                manifest = {}
+            entry["purpose"] = manifest.get("purpose", "")
+        except Exception as e:
+            warn(f"knolls: no manifest purpose for {name}: {e}")
+        knolls.append(entry)
+    return knolls
+
+
 # ── status ──────────────────────────────────────────────────────────────────
 
 def open_issue_count(repo_full: str, label: str, tok: str) -> int | None:
@@ -386,11 +419,24 @@ def fallback_state() -> tuple[dict, dict]:
         "name": "gn_sample_fixture",
         "display_name": "Gnome Sample Fixture",
         "level": "platform",
+        "knoll": "sample-knoll",
         "home": "sample-project",
         "version": "0.0.0",
         "deployments": ["sample-project"],
         "status": "planned",
         "purpose": "Offline build fixture — stands in for real gnomes when studio state is unreachable.",
+    }, {
+        "name": "gn_sample_unaffiliated",
+        "display_name": "Gnome Sample Unaffiliated",
+        "level": "platform",
+        "home": "sample-project",
+        "version": "0.0.0",
+        "deployments": ["sample-project"],
+        "status": "planned",
+        "purpose": "Offline build fixture — exercises the knoll-less directory section.",
+    }], "knolls": [{
+        "name": "sample-knoll",
+        "purpose": "Offline build fixture — stands in for real knolls when studio state is unreachable.",
     }]}
     return registry, gnomes
 
@@ -468,6 +514,11 @@ def main() -> int:
             g["purpose"] = manifest.get("purpose", "")
         except Exception as e:
             warn(f"gnomes: no manifest purpose for {g['var']}: {e}")
+
+    # Knoll groupings for the gnome directory (platform ADR-0033, www#19).
+    # Offline builds carry a fixture knoll from fallback_state().
+    if not args.offline:
+        gnomes["knolls"] = fetch_knolls(gnomes, platform_repo, tok)
 
     # Month-to-date spend chip for the status strip (www#2, transparency).
     if not args.offline:
