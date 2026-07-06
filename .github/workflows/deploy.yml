@@ -87,3 +87,30 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  # Conveyor tail (ADR-0030): the portal's rebuilt /studio-feed.json is the true
+  # "feed changed" signal for gn_portal_editor. Fire it here so the editor reads
+  # the FRESH feed (replacing its old daily cron). Loop-safe: an unchanged blurb
+  # produces no PR, so a rebuild triggered by the editor's own merge terminates.
+  ping-editor:
+    needs: deploy
+    if: ${{ github.repository_owner == 'bussetech' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint editor-dispatch token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.GNOME_APP_ID }}
+          private-key: ${{ secrets.GNOME_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: platform
+          permission-contents: write
+
+      - name: Dispatch gn-portal-editor (portal-rebuilt)
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          gh api "repos/${OWNER}/platform/dispatches" -f event_type=portal-rebuilt || \
+            echo "::warning::portal-editor ping failed (token lacks contents:write on platform)"
