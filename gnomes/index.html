@@ -2,42 +2,44 @@
 layout: page
 title: Gnomes
 eyebrow: Directory
-description: The studio is where the gnomes work — every agent in the registry, platform and project.
+description: The studio is where the gnomes work — every agent in the registry, platform and project, grouped by knoll.
 permalink: /gnomes/
 ---
 {%- assign gnomes = site.data.studio.gnomes.gnomes -%}
+{%- assign knolls = site.data.studio.gnomes.knolls -%}
 
 {%- if gnomes and gnomes.size > 0 -%}
-<p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. All of them live in the same registry, honor the same contract, and leave the same receipts.</p>
+<p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. Gnomes work in <strong>knolls</strong> — teams with a shared purpose and a shared knowledge base that every member carries into its runs. All of them live in the same registry, honor the same contract, and leave the same receipts.</p>
 
-{%- assign platform_gnomes = gnomes | where: "level", "platform" -%}
-{%- assign project_gnomes = gnomes | where: "level", "project" -%}
-
-<section aria-label="Platform gnomes">
-  <h2>Platform gnomes</h2>
-  {%- if platform_gnomes.size > 0 -%}
+{%- for k in knolls -%}
+{%- assign members = gnomes | where: "knoll", k.name -%}
+{%- if members.size > 0 -%}
+<section aria-label="Knoll: {{ k.name }}">
+  <h2>The {{ k.name }} knoll</h2>
+  {%- if k.purpose and k.purpose != "" -%}
+  <p>{{ k.purpose }}</p>
+  {%- endif -%}
   <div class="grid grid--3">
-    {%- for g in platform_gnomes -%}
+    {%- for g in members -%}
     {% include gnome-card.html gnome=g %}
     {%- endfor -%}
   </div>
-  {%- else -%}
-  <p>None yet.</p>
-  {%- endif -%}
 </section>
+{%- endif -%}
+{%- endfor -%}
 
-<section aria-label="Project gnomes">
-  <h2>Project gnomes</h2>
-  {%- if project_gnomes.size > 0 -%}
+{%- assign unaffiliated = gnomes | where_exp: "g", "g.knoll == nil" -%}
+{%- if unaffiliated.size > 0 -%}
+<section aria-label="Unaffiliated gnomes">
+  <h2>Unaffiliated</h2>
+  <p>Gnomes that serve the studio directly, outside any knoll.</p>
   <div class="grid grid--3">
-    {%- for g in project_gnomes -%}
+    {%- for g in unaffiliated -%}
     {% include gnome-card.html gnome=g %}
     {%- endfor -%}
   </div>
-  {%- else -%}
-  <p>None yet — the first project gnomes arrive with the first projects.</p>
-  {%- endif -%}
 </section>
+{%- endif -%}
 {%- else -%}
 <p>The gnome registry is empty or unavailable. Gnomes register in the studio's <code>gnomes.yml</code> and appear here on the next build.</p>
 {%- endif -%}
