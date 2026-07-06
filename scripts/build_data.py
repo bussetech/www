@@ -258,6 +258,44 @@ def derive_status(registry: dict, gnomes: dict, platform_repo: str, tok: str | N
     return status
 
 
+# ── cost chip (EPIC1-10 costs.json → portal transparency, www#2) ─────────────
+
+def fetch_cost_chip(platform_repo: str | None, tok: str | None) -> dict | None:
+    """Month-to-date studio spend vs budget, as a status chip — the portal's
+    'appropriate transparency' surface (www#2): the studio publishes what it
+    spends. Reads the portal-facing aggregate the ledger already publishes
+    (platform `costs.json` on the `ledger` branch; docs/ledger.md — aggregates
+    only, every value an ESTIMATE). Chip colour mirrors the ledger's own budget
+    thresholds so the portal and the alerts agree: ok < 80%, warn at >=80%,
+    error at breach. Best-effort — any failure returns None and the strip simply
+    omits the chip; a missing cost figure must never fail the portal build."""
+    if not tok or not platform_repo:
+        return None
+    try:
+        costs = json.loads(
+            gh_get(f"/repos/{platform_repo}/contents/costs.json?ref=ledger", tok, raw=True))
+    except Exception as e:
+        warn(f"cost: could not read costs.json from {platform_repo}@ledger: {e}")
+        return None
+    month = costs.get("month") or {}
+    spent, budget = month.get("est_cost_usd"), month.get("budget_usd")
+    if spent is None or not budget:
+        return None
+    fraction = month.get("budget_fraction")
+    if fraction is None:
+        fraction = spent / budget
+    status = "ok" if fraction < 0.8 else ("warn" if fraction < 1.0 else "error")
+    # "est." keeps the estimate caveat ON THE CHIP — never present an estimate
+    # as an invoice (format contract: platform docs/ledger.md).
+    return {
+        "status": status,
+        "label": f"${spent:,.2f} / ${budget:,.0f} est.",
+        "spent": round(spent, 2),
+        "budget_usd": budget,
+        "budget_fraction": round(fraction, 4),
+    }
+
+
 # ── outputs ─────────────────────────────────────────────────────────────────
 
 def write_overlay(registry: dict) -> None:
@@ -430,6 +468,12 @@ def main() -> int:
             g["purpose"] = manifest.get("purpose", "")
         except Exception as e:
             warn(f"gnomes: no manifest purpose for {g['var']}: {e}")
+
+    # Month-to-date spend chip for the status strip (www#2, transparency).
+    if not args.offline:
+        cost_chip = fetch_cost_chip(platform_repo, tok)
+        if cost_chip:
+            status["cost"] = cost_chip
 
     (DATA_DIR / "registry.json").write_text(json.dumps(registry, indent=2), encoding="utf-8")
     (DATA_DIR / "gnomes.json").write_text(json.dumps(gnomes, indent=2), encoding="utf-8")
