@@ -329,6 +329,31 @@ def fetch_cost_chip(platform_repo: str | None, tok: str | None) -> dict | None:
     }
 
 
+def fetch_subscriber_chip(platform_repo: str | None, tok: str | None) -> dict | None:
+    """Email-list subscriber COUNT as a status chip — the funnel datum
+    (platform EPIC3-03, #98). Reads the portal-facing aggregate the funnel
+    workflow publishes (platform `subscribers.json` on the `ledger` branch;
+    aggregates only, ADR-0034 — a total count, never a subscriber row). The
+    count is a metric, not a health threshold (targets stay unset until a
+    4-week baseline, strategy §7), so the chip is always nominal ("ok") and the
+    NUMBER is the signal, carried in the label. Best-effort, exactly like the
+    cost chip: no `subscribers.json` yet (capture not live) → None → the strip
+    simply omits the chip; it must never fail the portal build."""
+    if not tok or not platform_repo:
+        return None
+    try:
+        subs = json.loads(
+            gh_get(f"/repos/{platform_repo}/contents/subscribers.json?ref=ledger", tok, raw=True))
+    except Exception as e:
+        warn(f"subscribers: could not read subscribers.json from {platform_repo}@ledger: {e}")
+        return None
+    total = subs.get("total")
+    if not isinstance(total, int):
+        return None
+    label = f"{total:,} subscriber" if total == 1 else f"{total:,} subscribers"
+    return {"status": "ok", "label": label, "total": total}
+
+
 # ── outputs ─────────────────────────────────────────────────────────────────
 
 def write_overlay(registry: dict) -> None:
@@ -525,6 +550,13 @@ def main() -> int:
         cost_chip = fetch_cost_chip(platform_repo, tok)
         if cost_chip:
             status["cost"] = cost_chip
+
+    # Subscriber-count chip — the funnel datum (platform EPIC3-03, #98).
+    # Omitted until capture is live and subscribers.json exists on the ledger.
+    if not args.offline:
+        sub_chip = fetch_subscriber_chip(platform_repo, tok)
+        if sub_chip:
+            status["subscribers"] = sub_chip
 
     (DATA_DIR / "registry.json").write_text(json.dumps(registry, indent=2), encoding="utf-8")
     (DATA_DIR / "gnomes.json").write_text(json.dumps(gnomes, indent=2), encoding="utf-8")
