@@ -28,12 +28,26 @@ description: "The studio portal: every project, every gnome, and the latest acro
     {%- if studio_status.cost %}
     {% include status-chip.html status=studio_status.cost.status label=studio_status.cost.label %}
     {%- endif %}
+    {%- if studio_status.subscribers %}
+    {% include status-chip.html status=studio_status.subscribers.status label=studio_status.subscribers.label %}
+    {%- endif %}
   </p>
 </section>
 
 {%- if editorial.week_note and editorial.week_note != "" %}
 <section aria-label="This week in the studio">
   {% include callout.html label="This week in the studio" body=editorial.week_note %}
+</section>
+{%- endif %}
+
+{%- comment -%}
+  Email capture (platform EPIC3-03, #98). Live once studio.signup.enabled and the
+  theme pin carries signup.html; the guard keeps the include unresolved (build
+  green) on any site that has not opted in.
+{%- endcomment -%}
+{%- if site.studio.signup.enabled %}
+<section aria-label="Get studio updates">
+  {% include signup.html placement="www-home" %}
 </section>
 {%- endif %}
 
