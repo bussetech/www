@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Repo-Native Agent Operations"
-eyebrow: Whitepaper · v1.0.0 · 2026-07-06
+eyebrow: Whitepaper · v1.1.0 · 2026-07-06
 description: "The architecture of the Bussetech Software Studio: a one-operator studio whose workforce is a fleet of governed AI agents, run entirely through a Git hosting platform. Every claim checkable by git log."
 permalink: /whitepaper/
 ---
@@ -12,7 +12,7 @@ permalink: /whitepaper/
   "@type": "TechArticle",
   "headline": "Repo-Native Agent Operations: The Bussetech Software Studio Architecture",
   "description": "A pattern in which the repository platform is the sole message bus, governance layer, memory substrate, and financial ledger for an agent organization.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "datePublished": "2026-07-05",
   "dateModified": "2026-07-06",
   "author": { "@type": "Organization", "name": "Bussetech Software Studio", "legalName": "Eszett, LLC" },
@@ -253,9 +253,10 @@ strongest candidate for a genuinely novel operational pattern.
 
 **Knolls.** Gnomes are grouped into *knolls* — teams with a shared, knoll-scoped
 knowledge base built on the same distill-and-inject machinery as guidance. As of
-this version the knoll framework is a defined deliverable, not yet built; the
-registry's `level` field (platform vs project) already separates studio-serving
-from product-serving gnomes, and the guidance injection seam it will reuse is
+this version the knoll framework has shipped (ADR-0033): three knolls are live — a
+studio management knoll, a kdc project knoll, and the GTM knoll (seven gnomes); the
+registry's `level` field (platform vs project) separates studio-serving
+from product-serving gnomes, and the guidance injection seam it reuses is
 live today.
 
 **The personality firewall.** For brand purposes, gnomes will carry personality
@@ -283,9 +284,10 @@ through the full safety stack. Numbers at pilot close (early July 2026): 6 repos
 11 registered gnomes (100% dry-run simulation coverage), 20 ADRs, 5 guidance
 entries, 33 site records from 183 per-source signals across 7 states, every fact
 source-cited, honest negatives included. The receipts have kept accruing since:
-as of this version (2026-07-06) the studio stands at 7 repos, 11 gnomes, 32 ADRs,
-7 guidance entries, and 35 records — the same machinery, more evidence, every
-count verifiable by `git log`.
+as of this version (2026-07-06) the studio stands at 7 repos, 18 gnomes, 34 ADRs,
+8 guidance entries, and 36 records — the same machinery, more evidence, every
+count verifiable by `git log` (platform counts against the platform repository;
+records/signals against the kdc repository).
 
 The most instructive result was negative: the simulation layer validated the
 happy path, and all four platform bugs found during the pilot were input-texture
@@ -298,7 +300,7 @@ find it.
 
 ## 7. Limitations
 
-We state these plainly. (1) *Scale*: one operator, seven repos, eleven gnomes at
+We state these plainly. (1) *Scale*: one operator, seven repos, eighteen gnomes at
 the time of writing; none of the receipt or governance claims have been tested at
 enterprise fleet scale, and the in-repo ledger would need the artifact-collector
 variant well before high-frequency operation. (2) *Platform coupling*: the
@@ -315,11 +317,12 @@ repositories — the successor's onboarding document is the organization itself.
 
 ## 8. Future work
 
-Two items on the original future-work list have since shipped and now carry their
+Three items on the original future-work list have since shipped and now carry their
 own operating evidence: autonomous research intake behind an allowlisted,
-deterministic fetch layer, and model routing with fixture-gated downgrades — a
-downgrade may not regress a gnome's own fixtures before it takes effect. What
-remains genuinely ahead: the knoll knowledge-base framework; a multi-tenant SaaS
+deterministic fetch layer; model routing with fixture-gated downgrades — a
+downgrade may not regress a gnome's own fixtures before it takes effect; and the
+knoll knowledge-base framework (ADR-0033), now live across a studio, a kdc, and a
+GTM knoll. What remains genuinely ahead: a multi-tenant SaaS
 stratum to be proven on the studio's own client portal before any client
 engagement depends on it; the display-only personality overlay under its
 CI-enforced firewall; and brownfield adoption — an intake gnome that classifies
@@ -359,5 +362,6 @@ version; prior versions are archived at `/whitepaper/vX.Y.Z/`.
 
 | Version | Date | Change |
 | --- | --- | --- |
+| **1.1.0** | 2026-07-06 | Evidence refresh (minor), from the Scholar charter's claim-drift check against live state (EPIC3-04). Current-state counts updated: 18 gnomes (was 11), 34 ADRs (was 32), 8 guidance entries (was 7), 36 records (was 35); repos unchanged at 7. Knoll framework moved from "not yet built" to **shipped** (ADR-0033) — the studio, kdc, and GTM knolls are now live; the GTM knoll (seven gnomes) was founded in EPIC3-04. No architectural claim changed — the architecture anticipated knolls. |
 | **1.0.0** | 2026-07-06 | First ratified release. Editorial pass against live repository state: removed an unsupported "first six months of operating evidence" claim; dated the pilot-close snapshot and added a verifiable current-state line; moved autonomous research intake and fixture-gated model routing from future work to shipped; refreshed internal-source ranges; clarified knoll and personality-overlay build status. No architectural claim changed. |
 | 0.1 | 2026-07-05 | Initial draft (planning surface). |
