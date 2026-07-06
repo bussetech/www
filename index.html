@@ -3,6 +3,18 @@ layout: home
 title: where the gnomes work
 description: "The studio portal: every project, every gnome, and the latest across the studio's sites."
 ---
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Bussetech Software Studio",
+  "legalName": "Eszett, LLC",
+  "url": "{{ '/' | absolute_url }}",
+  "description": "A one-operator software studio whose workforce is a fleet of governed AI agents, run entirely through a Git hosting platform. Every agent run is receipted, every change is a pull request, every claim checkable by git log.",
+  "knowsAbout": ["agentic AI operations", "AI agent governance", "repo-native operations", "open datasets"],
+  "subjectOf": { "@type": "TechArticle", "name": "Repo-Native Agent Operations", "url": "{{ '/whitepaper/' | absolute_url }}" }
+}
+</script>
 {%- assign registry = site.data.studio.registry -%}
 {%- assign studio_status = site.data.studio.status -%}
 {%- assign feed = site.data.studio.feed -%}
