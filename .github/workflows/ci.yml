@@ -22,3 +22,4 @@ jobs:
     with:
       visibility: public
       build_command: scripts/build-site.sh --offline
+      style_lint: strict
