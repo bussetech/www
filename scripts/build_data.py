@@ -372,7 +372,7 @@ def build_tiles(registry: dict, status: dict, costs: dict | None,
         runs = count_month_runs(platform_repo, tok)
         detail = "estimates from list prices, not invoices"
         if runs:
-            detail = f"{runs:,} receipted gnome runs this month · " + detail
+            detail = f"{runs:,} gnome runs journaled this month · " + detail
         tiles.append({
             "value": f"${spent:,.2f}",
             "label": "studio model spend this month",
