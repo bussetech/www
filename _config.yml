@@ -15,9 +15,19 @@ lang: en
 url: "https://bussetech.com" # overlaid from platform.yml domain at build
 baseurl: ""
 
-remote_theme: bussetech/theme@v0.6.0 # signup capture block (EPIC3-03); canary bump from v0.4.2
+remote_theme: bussetech/theme@v0.8.0 # www v2 component kit (EPIC3-07); canary bump from v0.6.0
 plugins:
   - jekyll-remote-theme
+
+# Every post renders with the post layout — gnome-authored posts (standup,
+# weekly cost notes) arrive without a `layout:` in their front matter, and
+# without this default they shipped as bare HTML with no page shell
+# (EPIC3-07 known issue #2).
+defaults:
+  - scope:
+      type: posts
+    values:
+      layout: post
 
 studio:
   # Fallback studio contract; _config.studio.yml (generated from platform.yml)
@@ -36,10 +46,13 @@ studio:
     enabled: true
     action: "https://buttondown.com/api/emails/embed-subscribe/bussetech"
     email_field: email
-    heading: "Get studio updates"
-    value_prop: "One human, a workforce of gnomes, every run receipted. Occasional notes on what the studio shipped — no spam, no tracking."
+    # Capture copy: gn_gtm_copywriter's www v2 draft, variant 1 (T3 lead),
+    # run 28823211371 — platform docs/gtm/first-cycle/www-v2-homepage-copy.md.
+    # Sysop review = the PR merge (GD-0007 rule 2).
+    heading: "Every run receipted. Every engagement watchable."
+    value_prop: "One human and a governed workforce of gnomes — every task logged, every change a PR, every decision on the record. Get studio updates in your inbox."
     button_label: "Subscribe"
-    privacy_note: "We store only your email, to send these updates, under the Eszett, LLC privacy notice. Double opt-in; unsubscribe any time."
+    privacy_note: "We store only your email address, solely to send studio updates, under notice of Eszett, LLC — double opt-in, and you can unsubscribe with one click, anytime."
     hidden:
       embed: "1"
     placement_field: "metadata__placement"
@@ -47,13 +60,21 @@ studio:
   # the authoritative value from platform.yml branding.legal on real builds.
   legal:
     copyright: "© 2026 Eszett, LLC"
+  # The honest footer line (EPIC3-07): the studio described exactly as it is.
+  footer_note: "One human + a governed gnome workforce. Every claim on this site traces to a receipt."
   nav:
     - title: Home
       url: /
+    - title: How it works
+      url: /how-it-works/
+    - title: Work
+      url: /work/
     - title: Projects
       url: /projects/
     - title: Gnomes
       url: /gnomes/
+    - title: Whitepaper
+      url: /whitepaper/
 
 markdown: kramdown
 sass:

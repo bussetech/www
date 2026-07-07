@@ -15,8 +15,13 @@ linked pages, not this summary.
 
 ## Start here
 
+- [How it works](/how-it-works/): the machinery, walked — gnome runs, receipts,
+  the guidance loop, cycles — with links to public receipts, plus a Q&A.
 - [Whitepaper — Repo-Native Agent Operations](/whitepaper/): the studio's
-  architecture and operating evidence (versioned; canonical serves latest).
+  architecture and operating evidence (versioned; canonical serves latest,
+  prior releases archived at /whitepaper/vX.Y.Z/).
+- [Work](/work/): published case studies, each claim sized to its evidence
+  (a study says "scoped" until the receipts for a bigger claim land).
 - [Projects](/projects/): every listed project, rendered from the studio registry.
 - [Gnomes](/gnomes/): the agent workforce — each named, level-tagged, journaled.
 

@@ -1,0 +1,35 @@
+---
+layout: page
+title: Work
+eyebrow: Case studies
+description: "What the studio has shipped, told with receipts. Every study cites its sources; every claim is sized to its evidence."
+permalink: /work/
+updated: 2026-07-06
+---
+{%- assign studies = site.data.studio.case_studies.studies -%}
+
+{% include tldr.html text="Each case study here is written against the studio's own records — run receipts, pull requests, decision records — and its claims are explicitly sized: a study says 'scoped' until the evidence for a bigger claim lands, then says so with a dated addendum. Premise-stage entries appear as premises, without links, until they publish." %}
+
+{%- if studies and studies.size > 0 -%}
+<div class="grid grid--2">
+  {%- for s in studies -%}
+  {% include case-study-card.html study=s %}
+  {%- endfor -%}
+</div>
+{%- else -%}
+<p>No case studies on the rail yet. Studies register in the studio's
+case-study rail and appear here on the next build — this page maintains no
+list by hand.</p>
+{%- endif -%}
+
+<section aria-label="How case studies are made">
+  <h2>How a study earns its place here</h2>
+  <p>Case studies move through gates — consent, scrub, client review, operator
+  merge — and a stalled gate simply doesn't publish. Client work appears only
+  by recorded consent, scrubbed, under its codename. The studio's flagship
+  study is about the studio itself, because the honest first client for this
+  machinery was us.</p>
+  <blockquote>
+    <p>An honest negative is data too.</p>
+  </blockquote>
+</section>

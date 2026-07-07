@@ -51,6 +51,19 @@ layout: page
     {%- endif -%}
   </section>
 
+  {%- comment -%}
+    The apex repo's feed is deliberately never fetched at build (fetching it
+    would only see the previous deploy — build_data.py), so the portal's own
+    detail page renders its posts natively instead (EPIC3-07 known issue #1).
+  {%- endcomment -%}
+  {%- if p.name == registry.apex_repo -%}
+  <section class="feed" aria-label="Latest from this project">
+    <h2>Latest</h2>
+    {%- for post in site.posts limit: 10 -%}
+    {% include feed-item.html item=post %}
+    {%- endfor -%}
+  </section>
+  {%- else -%}
   {%- assign project_items = site.data.studio.feed.items | where: "source", p.name -%}
   <section class="feed" aria-label="Latest from this project">
     <h2>Latest</h2>
@@ -64,6 +77,7 @@ layout: page
     <p>This project has no published site.</p>
     {%- endif -%}
   </section>
+  {%- endif -%}
 </div>
 {%- else -%}
 <p>This project is not in the studio registry. If it was recently removed, this page disappears on the next portal build.</p>
