@@ -11,7 +11,7 @@ show_posts: false
   "name": "Bussetech Software Studio",
   "legalName": "Eszett, LLC",
   "url": "{{ '/' | absolute_url }}",
-  "description": "A one-operator software studio whose workforce is a fleet of governed AI agents, run entirely through a Git hosting platform. Every agent run is receipted, every change is a pull request, every claim checkable by git log.",
+  "description": "A one-operator software studio whose workforce is a fleet of governed AI agents, run entirely through a Git hosting platform. Every agent run is journaled in a cost ledger, every change is a pull request, and every claim is checkable by git log.",
   "knowsAbout": ["agentic AI operations", "AI agent governance", "repo-native operations", "open datasets"],
   "subjectOf": { "@type": "TechArticle", "name": "Repo-Native Agent Operations", "url": "{{ '/whitepaper/' | absolute_url }}" }
 }
@@ -24,13 +24,14 @@ show_posts: false
 
 {%- comment -%}
   The premise, front-loaded (positioning T2/T5 — the ratified one-liner bank,
-  docs/gtm/positioning-theses.md). Autonomy language is #99-gated: nothing
-  here claims unattended self-sufficiency; the proof tiles and the case study
-  carry the scoped claims with their receipts.
+  docs/gtm/positioning-theses.md; wording restyled by STYLE-01 per
+  docs/gtm/style.md, premise unchanged). Autonomy language is #99-gated:
+  nothing here claims unattended self-sufficiency; the proof tiles and the
+  case study carry the scoped claims with their receipts.
 {%- endcomment -%}
 {% include hero.html
-   title="One human. A workforce of gnomes. Every run receipted."
-   lede="The Bussetech Software Studio is a one-operator software studio whose workforce is governed AI agents. Gnomes propose; one human approves. Every run is journaled, every change is a pull request, and every claim on this site traces to a receipt you can read."
+   title="One human. A workforce of gnomes. A receipt for every run."
+   lede="The Bussetech Software Studio is a one-operator software studio whose workforce is governed AI agents. Gnomes propose; one human approves. Every run is journaled, every change is a pull request, and every claim on this site traces to a record you can read."
    primary_label="How it works" primary_url="/how-it-works/"
    secondary_label="Read the whitepaper" secondary_url="/whitepaper/" %}
 
@@ -88,7 +89,7 @@ show_posts: false
 {%- endcomment -%}
 {%- if studies and studies.size > 0 %}
 <section aria-label="Case studies">
-  <h2>The work, receipted</h2>
+  <h2>The work, on the record</h2>
   <blockquote>
     <p>The studio doesn't promise transparency — building this way, it can't
     not provide it.</p>

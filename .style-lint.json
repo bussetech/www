@@ -1,0 +1,12 @@
+{
+  "exclude": ["whitepaper/v*/**", "scripts/**"],
+  "strict": ["index.html", "how-it-works/**", "work/**", "projects/**",
+             "gnomes/**", "news/**", "whitepaper/index.md", "README.md",
+             "llms.txt"],
+  "ack": [
+    {"path": "whitepaper/index.md", "rule": "receipt-count",
+     "reason": "the paper defines and evaluates the receipts mechanism (§4.5); remaining uses are the concept itself, not crutch usage — STYLE-01, sysop-reviewed on the retrofit PR"},
+    {"path": "whitepaper/index.md", "rule": "emdash-paragraph",
+     "reason": "the flagged paragraph is the changelog table; released rows are historical records kept verbatim — STYLE-01"}
+  ]
+}

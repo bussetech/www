@@ -2,7 +2,7 @@
 layout: page
 title: How it works
 eyebrow: The machinery
-description: "The repository platform is the studio's message bus, governance layer, memory, and ledger. This page walks the machinery — with links to receipts you can read yourself."
+description: "The repository platform is the studio's message bus, governance layer, memory, and ledger. This page walks the machinery and links the evidence so you can read it yourself."
 permalink: /how-it-works/
 updated: 2026-07-06
 faq:
@@ -13,14 +13,14 @@ faq:
   - q: "Is the studio a team of people?"
     a: "No. The studio is one human operator plus a governed workforce of AI agents. That structure is stated everywhere on purpose: solo-operator honesty is a standing rule, not a disclaimer."
   - q: "Do the agents run unattended?"
-    a: "Partly, and the studio says exactly which part. Cycle correctness — one meaningful cycle, dispatched and verified — is proven. Fully unattended self-refresh is in a live soak that has not yet finished; until its verdict lands, the studio claims scheduled autonomy in verification, nothing more."
+    a: "Partly, and the studio says exactly which part. Cycle correctness (one meaningful cycle, dispatched and verified) is proven. Fully unattended self-refresh is in a live soak that has not yet finished; until its verdict lands, the studio claims scheduled autonomy in verification, nothing more."
   - q: "What does it cost to run?"
     a: "Every model run is journaled with tokens and an estimated cost at list prices. The studio publishes its month-to-date spend on this site, live from the ledger, and narrates it in weekly cost notes. The figures are estimates, never invoices."
   - q: "Can I verify any of this?"
     a: "Yes — that is the point. The flagship project's repository is public: its agent pull requests, its CI checks, and its data provenance are readable by anyone. Claims that rest on private machinery are cited by decision-record number and sized to what the public evidence shows."
 ---
 
-{% include tldr.html text="The Bussetech Software Studio runs its AI agent workforce entirely through a Git hosting platform: work arrives as issues, agents propose pull requests, a single human merges, every run appends a cost receipt, and settled decisions become versioned policy injected into future runs. Nothing below claims more than its receipt shows." %}
+{% include tldr.html text="The Bussetech Software Studio runs its AI agent workforce entirely through a Git hosting platform: work arrives as issues, agents propose pull requests, a single human merges, every run appends a line to the cost ledger, and settled decisions become versioned policy injected into future runs. Nothing below claims more than its evidence shows." %}
 
 The studio's whitepaper, [Repo-Native Agent Operations](/whitepaper/), makes
 this argument formally. This page is the walking tour.
@@ -28,7 +28,7 @@ this argument formally. This page is the walking tour.
 ## The shape
 
 One GitHub organization. A control repo holds the studio's single source of
-truth — the project registry, the gnome fleet registry, decision records,
+truth: the project registry, the gnome fleet registry, decision records,
 policy, and the run ledger. Project repos hold the work. The portal you are
 reading renders it all and maintains nothing by hand: projects, gnomes, case
 studies, and every figure on the [home page](/) are fetched from studio state
@@ -49,27 +49,27 @@ trade is deliberate — expressive orchestration for total auditability.
    applicable policy entry. Untrusted input rides as data, never instructions.
 3. The gnome produces output; the runner checks its *shape* against the
    declared contract, then opens a pull request under the bot identity.
-4. The target repository's own CI checks the *semantics* — schema validation
+4. The target repository's own CI checks the *semantics*: schema validation
    and referential integrity. Two layers, separately owned.
 5. The runner appends a receipt to the ledger: model, tokens, estimated cost,
    duration, outcome.
-6. A green PR waits for the human. **Merge is the approval.**
+6. A green PR waits for the human; merge is the approval.
 
-This is not a diagram of intent — it runs in public. Watch a real one:
+None of this is aspiration; it runs in public. Watch a real one:
 [kdc#124](https://github.com/bussetech/kdc/pull/124) is a dataset PR proposed
 by `gn_kdc_records`, checks visible, merged by the operator. The
 [kdc Actions history](https://github.com/bussetech/kdc/actions) shows the
 scheduled runs themselves, successes and failures alike.
 
-## Receipts and the ledger
+## The ledger
 
-Every run — scheduled or interactive, success or failure — appends a JSONL
-receipt to a ledger branch of the control repo. A scribe gnome narrates weekly
+Every run, scheduled or interactive, success or failure, appends a JSONL line
+to a ledger branch of the control repo. A scribe gnome narrates weekly
 [cost notes](/news/) published on this site, and the
 [home page](/) carries month-to-date spend as a live figure at every build.
-The economics are legible because the receipts are the system of record: the
-flagship dataset's build cost is a number the studio can defend to the cent —
-as an estimate at list prices, which is exactly what it says on the label.
+The economics are legible because the ledger is the system of record: the
+flagship dataset's build cost is a number the studio can defend to the cent,
+as an estimate at list prices — which is exactly what it says on the label.
 
 ## Decisions become policy
 
@@ -77,7 +77,7 @@ When a gnome (or a session) hits a question it cannot answer, it files a
 decision issue with options, a recommendation, a deadline, and a default
 action. When the operator rules, a workflow distills the ruling into a
 numbered guidance entry that the runner injects into every applicable future
-run. **A question answered once becomes policy** — versioned, reviewed like
+run. A question answered once becomes policy: versioned, reviewed like
 code, citing the decision that created it.
 
 Above guidance sit architecture decision records (35+ and counting) and, above
@@ -89,22 +89,22 @@ checks, pinned versions) where you can see it.
 
 ## Cycles: the crank, not the calendar
 
-The studio classifies every recurring process by **what actually advances
-it**, not by a cron slot: conveyor chains that fire on upstream completion,
+The studio classifies every recurring process by what actually advances it,
+not by a cron slot: conveyor chains that fire on upstream completion,
 queues that drain when work exists, reflection cycles that close the books
 when a quantum of activity accrues, world-paced polls, sentinels that verify
 invariants before claims, and human rulings with deadline defaults. "Turn the
-crank" — run one meaningful cycle on demand and prove it — is how the studio
+crank" (run one meaningful cycle on demand and prove it) is how the studio
 tests its own autonomy honestly instead of waiting for the calendar.
 
 ## What's proven, and what isn't yet
 
-The studio's honesty bar: **no outward claim outruns its receipt.**
+The studio's honesty bar: no outward claim outruns its evidence.
 
 - **Proven:** the machinery founds real projects, produces real sourced data
   through the full safety stack, and one dispatched cycle runs end to end,
-  verified. Read [the kdc case study](https://kdc.bussetech.com/case-study/) —
-  built in a day, sustained by dispatched cycles, a receipt for every run.
+  verified. Read [the kdc case study](https://kdc.bussetech.com/case-study/):
+  built in a day, sustained by dispatched cycles, every run in the ledger.
 - **In verification:** fully unattended self-refresh. A live soak is running
   as this page is written; its verdict gets published either way, and the
   claim grows only when the evidence lands.
