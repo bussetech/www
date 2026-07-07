@@ -12,10 +12,13 @@ permalink: /gnomes/
 <p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. Gnomes work in <strong>knolls</strong> — teams with a shared purpose and a shared knowledge base that every member carries into its runs. All of them live in the same registry, honor the same contract, and leave the same receipts.</p>
 
 {%- comment -%}
-  Gnome-igotchi slot (EPIC3-09 fills): the display-only personality overlay —
-  derived from real run history, behind the CI-enforced firewall (personality
-  artifacts are never loadable by the harness) — will render on these cards.
-  This page reserves the surface; 07 deliberately builds none of it.
+  Gnome-igotchi (EPIC3-09, platform ADR-0036): the display-only personality
+  overlay — derived from real run history, behind the CI-enforced firewall
+  (personality artifacts are never loadable by the harness) — rides in on
+  each gnome's `igotchi` block (merged by scripts/build_data.py from
+  igotchi.json on the platform ledger branch) and renders inside the
+  theme's gnome-card. Every trait is traceable: rule + evidence live in
+  _data/studio/igotchi.json.
 {%- endcomment -%}
 {%- for k in knolls -%}
 {%- assign members = gnomes | where: "knoll", k.name -%}

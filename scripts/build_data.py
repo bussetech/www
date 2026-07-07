@@ -479,6 +479,37 @@ def fetch_costs(platform_repo: str | None, tok: str | None) -> dict | None:
         return None
 
 
+def fetch_igotchi(platform_repo: str | None, tok: str | None) -> dict | None:
+    """The gnome-igotchi personality profiles (platform `igotchi.json` on the
+    `ledger` branch — display-only by construction, platform ADR-0036: derived
+    FROM run history, never loaded INTO a gnome). Same best-effort idiom as
+    fetch_costs: None on any failure, and cards simply render without the
+    overlay — a missing personality must never fail the portal build."""
+    if not tok or not platform_repo:
+        return None
+    try:
+        return json.loads(
+            gh_get(f"/repos/{platform_repo}/contents/igotchi.json?ref=ledger", tok, raw=True))
+    except Exception as e:
+        warn(f"igotchi: could not read igotchi.json from {platform_repo}@ledger: {e}")
+        return None
+
+
+def igotchi_card_block(profile: dict, max_traits: int) -> dict:
+    """Reduce a full profile to the theme gnome-card's igotchi param
+    (glyph, stage, score, trait names, bio). Trait rule+evidence stay in
+    _data/studio/igotchi.json for the receipts-on-request surface;
+    max_traits comes from the profile file itself (platform igotchi config,
+    never hardcoded here)."""
+    return {
+        "glyph": profile.get("glyph"),
+        "stage": profile.get("stage"),
+        "score_display": profile.get("score_display"),
+        "traits": [t.get("name") for t in profile.get("traits", [])][:max_traits],
+        "bio": profile.get("bio"),
+    }
+
+
 def cost_chip(costs: dict | None) -> dict | None:
     """Month-to-date studio spend vs budget, as a status chip — the portal's
     'appropriate transparency' surface (www#2): the studio publishes what it
@@ -747,6 +778,22 @@ def main() -> int:
     # Offline builds carry a fixture knoll from fallback_state().
     if not args.offline:
         gnomes["knolls"] = fetch_knolls(gnomes, platform_repo, tok)
+
+    # Gnome-igotchi personality overlay (platform EPIC3-09, ADR-0036): merge
+    # each profile's card block onto its gnome so the theme's gnome-card
+    # renders it in the slot EPIC3-07 reserved. The full profiles (traits
+    # with rule + evidence — the receipts-on-request surface) are published
+    # to _data/studio/igotchi.json for future dashboard/portfolio views.
+    igotchi = None if args.offline else fetch_igotchi(platform_repo, tok)
+    if igotchi:
+        (DATA_DIR / "igotchi.json").write_text(
+            json.dumps(igotchi, indent=2, ensure_ascii=False), encoding="utf-8")
+        profiles = igotchi.get("gnomes", {})
+        max_traits = (igotchi.get("display") or {}).get("max_traits", 3)
+        for g in gnomes.get("gnomes", []):
+            profile = profiles.get(g.get("name", ""))
+            if profile:
+                g["igotchi"] = igotchi_card_block(profile, max_traits)
 
     # Month-to-date spend chip for the status strip (www#2, transparency).
     costs = None
