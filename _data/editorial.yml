@@ -12,5 +12,5 @@
 
 featured: "kdc"
 featured_note: "KDC published a case study this week on how the dataset was built — from an empty repo to a live, source-cited site, with every run receipted and every change reviewed as a pull request. It also launched with 33 project-sites across seven states and a filterable, status-coloured map."
-week_note: "KDC joined the studio this week, tracking US data center projects — announcements, permits, construction — as an open dataset. Its first release covers 33 project-sites resolved from 183 source signals, the site gained a browsable map with per-record locator pages, and a case study now documents how the whole thing gets built and kept up to date. Elsewhere on the portal, it was a quiet week."
+week_note: "KDC joined the studio this week, tracking US data center projects — announcements, permits, construction — as an open dataset. Its first release covers 33 project-sites resolved from 183 source signals, the site gained a browsable map with per-record locator pages, and a case study now documents how the whole thing gets built and kept up to date."
 updated: "2026-07-07"
