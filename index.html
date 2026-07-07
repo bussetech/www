@@ -53,7 +53,16 @@ show_posts: false
   <p>
     {% include status-chip.html status=studio_status.heartbeat.status label=studio_status.heartbeat.label %}
     {% include status-chip.html status=studio_status.uat.status label=studio_status.uat.label %}
+    {%- if studio_status.sims %}
+    {% include status-chip.html status=studio_status.sims.status label=studio_status.sims.label %}
+    {%- endif %}
+    {%- if studio_status.alerts %}
+    {% include status-chip.html status=studio_status.alerts.status label=studio_status.alerts.label %}
+    {%- endif %}
     {% include status-chip.html status=studio_status.gnomes.status label=studio_status.gnomes.label %}
+    {%- if studio_status.runs %}
+    {% include status-chip.html status=studio_status.runs.status label=studio_status.runs.label %}
+    {%- endif %}
     {%- if studio_status.cost %}
     {% include status-chip.html status=studio_status.cost.status label=studio_status.cost.label %}
     {%- endif %}
@@ -61,6 +70,9 @@ show_posts: false
     {% include status-chip.html status=studio_status.subscribers.status label=studio_status.subscribers.label %}
     {%- endif %}
   </p>
+  {%- if studio_status.as_of %}
+  <p class="attribution">Every chip derives from studio state at build — as of {{ studio_status.as_of }}.</p>
+  {%- endif %}
 </section>
 
 {%- if editorial.week_note and editorial.week_note != "" %}
