@@ -22,3 +22,6 @@ jobs:
     with:
       visibility: public
       build_command: scripts/build-site.sh --offline
+      # STYLE-01: warnings block on www (docs/gtm/style.md §4.2); page-level
+      # waivers live in .style-lint.json, each with a reason.
+      style_lint: strict

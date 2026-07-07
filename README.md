@@ -1,6 +1,6 @@
 # www — the studio portal
 
-The front door of the **Bussetech Software Studio**, served at the apex
+The front door of the Bussetech Software Studio, served at the apex
 domain. A classic internet portal rebuilt with developer-docs restraint: it
 indexes every project, shows every gnome at work, and streams the latest
 across all project sites.
@@ -26,7 +26,7 @@ scripts/build-site.sh              # live studio state (needs a token: STUDIO_TO
 
 `scripts/build_data.py` writes the fetched state to `_data/studio/` and
 generates one detail-page stub per listed project — all gitignored. Adding a
-repo to `platform.yml` needs **zero edits here**; it appears on the next
+repo to `platform.yml` needs zero edits here; it appears on the next
 build.
 
 ## Rebuilds
