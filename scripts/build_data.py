@@ -9,6 +9,8 @@ it where Jekyll can see it:
   _data/studio/gnomes.json     gnomes.yml (the central gnome registry)
   _data/studio/feed.json       merged project feeds (JSON Feed 1.1 sources)
   _data/studio/status.json     studio health, derived from issue labels
+                               (+ the homepage proof tiles, EPIC3-07)
+  _data/studio/case_studies.json  the work rail (platform docs/case-studies/rail.yml)
   _config.studio.yml           Jekyll overlay: branding/domain/beacon from platform.yml
   projects/<name>/index.md     one generated detail-page stub per listed repo
 
@@ -36,6 +38,7 @@ with a warning and never fails the build.
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import pathlib
@@ -135,6 +138,7 @@ def normalize_registry(platform: dict, source: str) -> dict:
         entry = {
             "name": r["name"],
             "description": r.get("description", ""),
+            "archetype": r.get("archetype"),
             "lifecycle": lifecycle,
             # status/status_label feed the theme's chip directly: green only
             # for live repos, amber otherwise — red is reserved for breakage.
@@ -240,6 +244,158 @@ def fetch_knolls(gnomes: dict, platform_repo: str | None, tok: str | None) -> li
     return knolls
 
 
+# ── case-study rail (EPIC3-07, platform docs/case-studies/rail.yml) ─────────
+
+def fetch_case_studies(platform_repo: str | None, tok: str | None) -> dict:
+    """The work rail: published (and premise-stage) case studies, from the
+    control repo's machine-readable rail (docs/case-studies/rail.yml, the
+    EPIC3-06 hand-off contract). Adding a study is a platform edit — the
+    portal needs zero changes. Best-effort: no rail file (or no token) means
+    an empty rail, never a failed build. Entries carry no repo URLs; `url` is
+    a published site (ADR-0006 posture)."""
+    local_state = os.environ.get("STUDIO_LOCAL_STATE")
+    rel = "docs/case-studies/rail.yml"
+    try:
+        if local_state:
+            rail = yaml.safe_load((pathlib.Path(local_state) / rel).read_text(encoding="utf-8"))
+        elif tok and platform_repo:
+            rail = fetch_yaml(platform_repo, rel, tok)
+        else:
+            return {"studies": []}
+    except Exception as e:
+        warn(f"case studies: could not read {rel}: {e}")
+        return {"studies": []}
+    studies = []
+    for s in (rail or {}).get("studies", []):
+        studies.append({
+            "repo": s.get("repo", ""),
+            "title": s.get("title", ""),
+            "url": s.get("url"),
+            "status": s.get("status", "premise"),
+            "claim_state": s.get("claim_state"),
+            "blurb": s.get("blurb", ""),
+        })
+    return {"studies": studies}
+
+
+# ── proof tiles (EPIC3-07: live figures for the homepage argument) ──────────
+
+def count_dataset_records(registry: dict, tok: str | None) -> tuple[int, list[str]]:
+    """Records across the studio's active, listed info-archetype projects —
+    counted from each project's canonical record store (`data/sites/`, the
+    source-registry reference layout) via the contents API at build time.
+    Returns (total, contributing repo names). Best-effort per repo."""
+    total, contributing = 0, []
+    if not tok:
+        return 0, []
+    org = registry.get("org", "")
+    for repo in registry["repos"]:
+        if repo.get("archetype") != "info" or repo["lifecycle"] != "active" or not repo["listed"]:
+            continue
+        if repo["name"] == registry.get("apex_repo"):
+            continue
+        try:
+            entries = gh_get(f"/repos/{org}/{repo['name']}/contents/data/sites", tok)
+            n = len([e for e in entries if e.get("type") == "file"])
+        except Exception as e:
+            warn(f"tiles: could not count records in {repo['name']}: {e}")
+            continue
+        if n:
+            total += n
+            contributing.append(repo["name"])
+    return total, contributing
+
+
+def count_month_runs(platform_repo: str | None, tok: str | None) -> int | None:
+    """Gnome runs journaled this month — the ledger's JSONL on the `ledger`
+    branch (one receipt per line; docs/ledger.md). Same data plane as the
+    cost chip, no new machinery."""
+    if not tok or not platform_repo:
+        return None
+    month = datetime.date.today().strftime("%Y-%m")
+    try:
+        body = gh_get(f"/repos/{platform_repo}/contents/ledger/{month}.jsonl?ref=ledger",
+                      tok, raw=True)
+        return len([ln for ln in body.splitlines() if ln.strip()])
+    except Exception as e:
+        warn(f"tiles: could not count ledger runs for {month}: {e}")
+        return None
+
+
+def soak_state(platform_repo: str | None, tok: str | None) -> str | None:
+    """The unattended-reliability soak, read off the message bus like every
+    other status signal: an open `soak`-labeled issue on the control repo is a
+    soak in progress; its age gives the day count."""
+    if not tok or not platform_repo:
+        return None
+    try:
+        issues = gh_get(f"/repos/{platform_repo}/issues?state=open&labels=soak&per_page=10", tok)
+        issues = [i for i in issues if "pull_request" not in i]
+    except Exception as e:
+        warn(f"tiles: could not read soak issues: {e}")
+        return None
+    if not issues:
+        return None
+    created = issues[0].get("created_at", "")
+    try:
+        day = (datetime.date.today()
+               - datetime.datetime.fromisoformat(created.replace("Z", "+00:00")).date()).days
+        return f"unattended soak in progress — day {day}"
+    except Exception:
+        return "unattended soak in progress"
+
+
+def build_tiles(registry: dict, status: dict, costs: dict | None,
+                case_studies: dict, platform_repo: str | None, tok: str | None) -> list[dict]:
+    """The homepage proof tiles: every figure fetched from live studio state
+    at build time, each carrying the receipt a visitor can check. A tile whose
+    figure can't be resolved is OMITTED — the page never shows a stale or
+    invented number (no outward claim outruns its receipt)."""
+    today = datetime.date.today().isoformat()
+    tiles = []
+
+    n_records, contributing = count_dataset_records(registry, tok)
+    if n_records:
+        one = contributing[0] if len(contributing) == 1 else None
+        site = next((r["site_url"] for r in registry["repos"] if r["name"] == one), None)
+        tiles.append({
+            "value": f"{n_records:,}",
+            "label": "records in the studio's open datasets",
+            "detail": f"counted from {', '.join(contributing)} at build · {today}",
+            "href": site or "/projects/",
+            "link_label": "browse the live dataset" if site else "see the projects",
+        })
+
+    month = (costs or {}).get("month") or {}
+    spent = month.get("est_cost_usd")
+    if spent is not None:
+        runs = count_month_runs(platform_repo, tok)
+        detail = "estimates from list prices, not invoices"
+        if runs:
+            detail = f"{runs:,} receipted gnome runs this month · " + detail
+        tiles.append({
+            "value": f"${spent:,.2f}",
+            "label": "studio model spend this month",
+            "detail": detail,
+            "href": "/news/",
+            "link_label": "read the cost notes",
+        })
+
+    heartbeat = status.get("heartbeat", {})
+    if heartbeat.get("label") != "unknown":
+        soak = soak_state(platform_repo, tok)
+        kdc_study = next((s.get("url") for s in case_studies.get("studies", [])
+                          if s.get("status") == "published" and s.get("url")), None)
+        tiles.append({
+            "value": "passing" if heartbeat.get("status") == "ok" else "failing",
+            "label": "cross-repo chain test",
+            "detail": (soak + f" · {today}") if soak else f"derived from open alert issues · {today}",
+            "href": kdc_study or "/whitepaper/",
+            "link_label": "read the case study" if kdc_study else "read the whitepaper",
+        })
+    return tiles
+
+
 # ── status ──────────────────────────────────────────────────────────────────
 
 def open_issue_count(repo_full: str, label: str, tok: str) -> int | None:
@@ -293,7 +449,21 @@ def derive_status(registry: dict, gnomes: dict, platform_repo: str, tok: str | N
 
 # ── cost chip (EPIC1-10 costs.json → portal transparency, www#2) ─────────────
 
-def fetch_cost_chip(platform_repo: str | None, tok: str | None) -> dict | None:
+def fetch_costs(platform_repo: str | None, tok: str | None) -> dict | None:
+    """The portal-facing cost aggregate the ledger publishes (platform
+    `costs.json` on the `ledger` branch) — fetched once, consumed by both the
+    cost chip and the spend proof tile. Best-effort: None on any failure."""
+    if not tok or not platform_repo:
+        return None
+    try:
+        return json.loads(
+            gh_get(f"/repos/{platform_repo}/contents/costs.json?ref=ledger", tok, raw=True))
+    except Exception as e:
+        warn(f"cost: could not read costs.json from {platform_repo}@ledger: {e}")
+        return None
+
+
+def cost_chip(costs: dict | None) -> dict | None:
     """Month-to-date studio spend vs budget, as a status chip — the portal's
     'appropriate transparency' surface (www#2): the studio publishes what it
     spends. Reads the portal-facing aggregate the ledger already publishes
@@ -302,15 +472,7 @@ def fetch_cost_chip(platform_repo: str | None, tok: str | None) -> dict | None:
     thresholds so the portal and the alerts agree: ok < 80%, warn at >=80%,
     error at breach. Best-effort — any failure returns None and the strip simply
     omits the chip; a missing cost figure must never fail the portal build."""
-    if not tok or not platform_repo:
-        return None
-    try:
-        costs = json.loads(
-            gh_get(f"/repos/{platform_repo}/contents/costs.json?ref=ledger", tok, raw=True))
-    except Exception as e:
-        warn(f"cost: could not read costs.json from {platform_repo}@ledger: {e}")
-        return None
-    month = costs.get("month") or {}
+    month = (costs or {}).get("month") or {}
     spent, budget = month.get("est_cost_usd"), month.get("budget_usd")
     if spent is None or not budget:
         return None
@@ -416,6 +578,30 @@ def write_project_stubs(registry: dict) -> None:
         )
 
 
+def fallback_case_studies() -> dict:
+    """Offline stand-in for the work rail, clearly marked as fixture data."""
+    return {"studies": [{
+        "repo": "sample-project",
+        "title": "Offline build fixture — a stand-in case study",
+        "url": None,
+        "status": "premise",
+        "claim_state": None,
+        "blurb": "Stands in for real case studies when studio state is unreachable, so the work rail renders in offline builds.",
+    }]}
+
+
+def fallback_tiles() -> list[dict]:
+    """Offline stand-ins for the proof tiles, clearly marked as fixtures."""
+    return [
+        {"value": "0", "label": "records (offline build fixture)",
+         "detail": "no studio state fetched", "href": None, "link_label": None},
+        {"value": "$0.00", "label": "spend (offline build fixture)",
+         "detail": "no studio state fetched", "href": None, "link_label": None},
+        {"value": "fixture", "label": "chain test (offline build fixture)",
+         "detail": "no studio state fetched", "href": None, "link_label": None},
+    ]
+
+
 def fallback_state() -> tuple[dict, dict]:
     """Offline stand-ins, clearly marked as fixtures.
 
@@ -429,6 +615,7 @@ def fallback_state() -> tuple[dict, dict]:
         "repos": [{
             "name": "sample-project",
             "description": "Offline build fixture — stands in for real projects when studio state is unreachable.",
+            "archetype": None,
             "lifecycle": "planned",
             "status": "warn",
             "status_label": "fixture",
@@ -546,10 +733,12 @@ def main() -> int:
         gnomes["knolls"] = fetch_knolls(gnomes, platform_repo, tok)
 
     # Month-to-date spend chip for the status strip (www#2, transparency).
+    costs = None
     if not args.offline:
-        cost_chip = fetch_cost_chip(platform_repo, tok)
-        if cost_chip:
-            status["cost"] = cost_chip
+        costs = fetch_costs(platform_repo, tok)
+        chip = cost_chip(costs)
+        if chip:
+            status["cost"] = chip
 
     # Subscriber-count chip — the funnel datum (platform EPIC3-03, #98).
     # Omitted until capture is live and subscribers.json exists on the ledger.
@@ -558,6 +747,19 @@ def main() -> int:
         if sub_chip:
             status["subscribers"] = sub_chip
 
+    # The work rail + homepage proof tiles (EPIC3-07). Offline builds carry
+    # fixtures from fallback_state(); live builds resolve everything from
+    # studio state and omit any tile whose figure can't be fetched.
+    if args.offline:
+        case_studies = fallback_case_studies()
+        status["tiles"] = fallback_tiles()
+    else:
+        case_studies = fetch_case_studies(platform_repo, tok)
+        status["tiles"] = build_tiles(registry, status, costs, case_studies,
+                                      platform_repo, tok)
+
+    (DATA_DIR / "case_studies.json").write_text(
+        json.dumps(case_studies, indent=2), encoding="utf-8")
     (DATA_DIR / "registry.json").write_text(json.dumps(registry, indent=2), encoding="utf-8")
     (DATA_DIR / "gnomes.json").write_text(json.dumps(gnomes, indent=2), encoding="utf-8")
     (DATA_DIR / "feed.json").write_text(json.dumps(feed, indent=2), encoding="utf-8")

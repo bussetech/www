@@ -2,6 +2,7 @@
 layout: home
 title: where the gnomes work
 description: "The studio portal: every project, every gnome, and the latest across the studio's sites."
+show_posts: false
 ---
 <script type="application/ld+json">
 {
@@ -19,6 +20,34 @@ description: "The studio portal: every project, every gnome, and the latest acro
 {%- assign studio_status = site.data.studio.status -%}
 {%- assign feed = site.data.studio.feed -%}
 {%- assign editorial = site.data.editorial -%}
+{%- assign studies = site.data.studio.case_studies.studies -%}
+
+{%- comment -%}
+  The premise, front-loaded (positioning T2/T5 — the ratified one-liner bank,
+  docs/gtm/positioning-theses.md). Autonomy language is #99-gated: nothing
+  here claims unattended self-sufficiency; the proof tiles and the case study
+  carry the scoped claims with their receipts.
+{%- endcomment -%}
+{% include hero.html
+   title="One human. A workforce of gnomes. Every run receipted."
+   lede="The Bussetech Software Studio is a one-operator software studio whose workforce is governed AI agents. Gnomes propose; one human approves. Every run is journaled, every change is a pull request, and every claim on this site traces to a receipt you can read."
+   primary_label="How it works" primary_url="/how-it-works/"
+   secondary_label="Read the whitepaper" secondary_url="/whitepaper/" %}
+
+{%- comment -%}
+  Proof tiles (EPIC3-07): every figure resolves from live studio state at
+  build time (scripts/build_data.py) — never from copy. A tile whose figure
+  can't be fetched is omitted, not faked.
+{%- endcomment -%}
+{%- if studio_status.tiles and studio_status.tiles.size > 0 %}
+<section aria-label="Live studio figures">
+  <div class="grid grid--3">
+    {%- for t in studio_status.tiles -%}
+    {% include stat-tile.html value=t.value label=t.label detail=t.detail href=t.href link_label=t.link_label %}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif %}
 
 <section aria-label="Studio status">
   <p>
@@ -41,13 +70,23 @@ description: "The studio portal: every project, every gnome, and the latest acro
 {%- endif %}
 
 {%- comment -%}
-  Email capture (platform EPIC3-03, #98). Live once studio.signup.enabled and the
-  theme pin carries signup.html; the guard keeps the include unresolved (build
-  green) on any site that has not opted in.
+  The work lead (EPIC3-06 → 07): the case-study rail's top entries plus the
+  studio's own words about its claim discipline. The rail derives from
+  platform docs/case-studies/rail.yml — adding a study needs zero edits here.
 {%- endcomment -%}
-{%- if site.studio.signup.enabled %}
-<section aria-label="Get studio updates">
-  {% include signup.html placement="www-home" %}
+{%- if studies and studies.size > 0 %}
+<section aria-label="Case studies">
+  <h2>The work, receipted</h2>
+  <blockquote>
+    <p>The studio doesn't promise transparency — building this way, it can't
+    not provide it.</p>
+  </blockquote>
+  <div class="grid grid--2">
+    {%- for s in studies limit: 2 -%}
+    {% include case-study-card.html study=s %}
+    {%- endfor -%}
+  </div>
+  <p><a class="btn btn--ghost" href="{{ '/work/' | relative_url }}">All case studies</a></p>
 </section>
 {%- endif %}
 
@@ -84,6 +123,22 @@ description: "The studio portal: every project, every gnome, and the latest acro
   {%- endif -%}
 </section>
 
+{%- comment -%}
+  Studio news: the portal's own posts (whitepaper releases, standups, the
+  weekly cost notes — the spend tile's receipt trail). Rendered here instead
+  of the home layout's auto strip (show_posts: false) so the two feeds carry
+  distinct names.
+{%- endcomment -%}
+{%- if site.posts and site.posts.size > 0 %}
+<section class="feed" id="studio-news" aria-label="Studio news">
+  <h2>Studio news</h2>
+  {%- for post in site.posts limit: 5 -%}
+  {% include feed-item.html item=post %}
+  {%- endfor -%}
+  <p><a class="btn btn--ghost" href="{{ '/news/' | relative_url }}">All studio news</a></p>
+</section>
+{%- endif %}
+
 <section class="feed" aria-label="Latest across the studio">
   <h2>Latest across the studio</h2>
   {%- if feed.items.size > 0 -%}
@@ -94,3 +149,14 @@ description: "The studio portal: every project, every gnome, and the latest acro
   <p>Nothing aggregated yet — project sites publish <code>/feed.json</code> and their updates appear here.</p>
   {%- endif -%}
 </section>
+
+{%- comment -%}
+  Email capture (platform EPIC3-03, #98; copy: gn_gtm_copywriter variant 1 via
+  _config.yml). The guard keeps the include unresolved on any site that has
+  not opted in.
+{%- endcomment -%}
+{%- if site.studio.signup.enabled %}
+<section aria-label="Get studio updates">
+  {% include signup.html placement="www-home" %}
+</section>
+{%- endif %}
