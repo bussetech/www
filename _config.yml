@@ -49,7 +49,7 @@ studio:
     # Capture copy: gn_gtm_copywriter's www v2 draft, variant 1 (T3 lead),
     # run 28823211371 — platform docs/gtm/first-cycle/www-v2-homepage-copy.md.
     # Sysop review = the PR merge (GD-0007 rule 2).
-    heading: "Every run receipted. Every engagement watchable."
+    heading: "Every run in the ledger. Every engagement watchable."
     value_prop: "One human and a governed workforce of gnomes — every task logged, every change a PR, every decision on the record. Get studio updates in your inbox."
     button_label: "Subscribe"
     privacy_note: "We store only your email address, solely to send studio updates, under notice of Eszett, LLC — double opt-in, and you can unsubscribe with one click, anytime."
