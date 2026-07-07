@@ -135,6 +135,7 @@ show_posts: false
   {%- for post in site.posts limit: 5 -%}
   {% include feed-item.html item=post %}
   {%- endfor -%}
+  <p><a class="btn btn--ghost" href="{{ '/news/' | relative_url }}">All studio news</a></p>
 </section>
 {%- endif %}
 

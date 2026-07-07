@@ -377,7 +377,7 @@ def build_tiles(registry: dict, status: dict, costs: dict | None,
             "value": f"${spent:,.2f}",
             "label": "studio model spend this month",
             "detail": detail,
-            "href": "/#studio-news",
+            "href": "/news/",
             "link_label": "read the cost notes",
         })
 

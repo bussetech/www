@@ -1,0 +1,17 @@
+---
+layout: page
+title: Studio news
+eyebrow: News
+description: "The portal's own posts: whitepaper releases, standups, and the weekly cost notes — the studio narrating its own receipts."
+permalink: /news/
+show_posts: false
+---
+{%- if site.posts and site.posts.size > 0 -%}
+<div class="stack">
+  {%- for post in site.posts -%}
+  {% include feed-item.html item=post %}
+  {%- endfor -%}
+</div>
+{%- else -%}
+<p>No posts yet.</p>
+{%- endif -%}

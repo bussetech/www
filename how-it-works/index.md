@@ -65,7 +65,7 @@ scheduled runs themselves, successes and failures alike.
 
 Every run — scheduled or interactive, success or failure — appends a JSONL
 receipt to a ledger branch of the control repo. A scribe gnome narrates weekly
-[cost notes](/#studio-news) published on this site, and the
+[cost notes](/news/) published on this site, and the
 [home page](/) carries month-to-date spend as a live figure at every build.
 The economics are legible because the receipts are the system of record: the
 flagship dataset's build cost is a number the studio can defend to the cent —
