@@ -1,0 +1,14 @@
+# Column spec for the gnome leaderboard (theme sortable-table.html).
+# `stage` displays the glyph and sorts by ladder position (stage_sort,
+# emitted by scripts/build_data.py); tokens displays humanized and sorts raw.
+- key: gnome
+  label: Gnome
+- key: stage
+  label: St
+  title: Stage (craft ladder)
+- key: tokens
+  label: Tokens
+  numeric: true
+- key: runs
+  label: Runs
+  numeric: true

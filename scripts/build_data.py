@@ -794,6 +794,24 @@ def main() -> int:
             profile = profiles.get(g.get("name", ""))
             if profile:
                 g["igotchi"] = igotchi_card_block(profile, max_traits)
+        # Leaderboard rows for the gnome directory's rail (theme
+        # sortable-table.html row shape: display value per column key,
+        # <key>_sort overrides where display is formatted). Stage sorts by
+        # ladder position — the glyphs don't sort by codepoint.
+        stage_order = [s.get("name") for s in igotchi.get("stages", [])]
+        leaderboard = [
+            {
+                "gnome": name,
+                "stage": p.get("glyph"),
+                "stage_sort": stage_order.index(p["stage"]) if p.get("stage") in stage_order else -1,
+                "tokens": p.get("score_display"),
+                "tokens_sort": p.get("score_tokens", 0),
+                "runs": p.get("runs", 0),
+            }
+            for name, p in profiles.items()
+        ]
+        (DATA_DIR / "leaderboard.json").write_text(
+            json.dumps(leaderboard, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Month-to-date spend chip for the status strip (www#2, transparency).
     costs = None
