@@ -16,6 +16,13 @@ one-line law is: **the portal is a renderer, not a second source of truth.**
 - **Theme:** pinned `remote_theme` tag in `_config.yml`; bump only to a
   tagged release, canary-first (theme `docs/versioning.md`). No new colors,
   no bespoke CSS beyond page-level layout glue. Colour is wayfinding only.
+- **Maturity rung: 1 (Jekyll)** — re-examined at www v2 (EPIC3-07) against the
+  ladder's Astro question (platform `docs/maturity.md`): no promotion signal
+  is met — v2 needs no component islands (the only JS is the theme's nav
+  toggle), data is fetch-at-build either way, and the studio's theme/CI/UAT
+  machinery is Jekyll-shaped (the first Astro climber pays for the
+  theme-equivalent layer). Revisit on real interaction-depth evidence, not
+  aesthetics.
 - **Branding is injected, not hardcoded**: real builds overlay
   `_config.studio.yml`, generated from `platform.yml` (logotype, domain,
   analytics beacon). The values in `_config.yml` are detached-build fallbacks.
