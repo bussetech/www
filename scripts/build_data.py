@@ -431,6 +431,22 @@ def derive_status(registry: dict, gnomes: dict, platform_repo: str, tok: str | N
         status["heartbeat"] = ({"status": "ok", "label": "chain test passing"} if n == 0
                                else {"status": "error", "label": "chain test failing"})
 
+    # Simulation layer + the red-alert rollup (EPIC3-07 chip coverage).
+    # Same message-bus derivation as the heartbeat: the comms charter's red
+    # labels are the studio's own severity rubric, so the rollup publicly
+    # commits the strip to it — a visitor can falsify "no open red alerts"
+    # by reading the control repo's issues.
+    sim_n = open_issue_count(platform_repo, "sim-failure", tok)
+    if sim_n is not None:
+        status["sims"] = ({"status": "ok", "label": "sims passing"} if sim_n == 0
+                          else {"status": "error", "label": f"sims failing ({sim_n} open)"})
+    budget_n = open_issue_count(platform_repo, "budget-breach", tok)
+    if n is not None and sim_n is not None and budget_n is not None:
+        red = n + sim_n + budget_n
+        status["alerts"] = ({"status": "ok", "label": "no open red alerts"} if red == 0
+                            else {"status": "error",
+                                  "label": f"{red} red alert{'s' if red != 1 else ''} open"})
+
     org = registry["org"]
     failures, checked = 0, 0
     for repo in registry["repos"]:
@@ -740,12 +756,31 @@ def main() -> int:
         if chip:
             status["cost"] = chip
 
+    # Run-health chip (EPIC3-07 chip coverage): runs + errors this week,
+    # straight from the ledger aggregate already fetched for the cost chip.
+    # Rendered NOMINAL like the subscriber chip — a count is a metric, and no
+    # error-rate threshold has been ruled (inventing one here would be a
+    # policy act; a sysop ruling can colour it later). Showing the error
+    # count unprompted is the point: failures are part of the receipt.
+    week = (costs or {}).get("week") or {}
+    if isinstance(week.get("runs"), int):
+        label = f"{week['runs']:,} runs this week"
+        if isinstance(week.get("errors"), int):
+            label += f" · {week['errors']:,} errored"
+        status["runs"] = {"status": "ok", "label": label,
+                          "runs": week["runs"], "errors": week.get("errors")}
+
     # Subscriber-count chip — the funnel datum (platform EPIC3-03, #98).
     # Omitted until capture is live and subscribers.json exists on the ledger.
     if not args.offline:
         sub_chip = fetch_subscriber_chip(platform_repo, tok)
         if sub_chip:
             status["subscribers"] = sub_chip
+
+    # Build-time honesty for the whole strip: every chip is a snapshot taken
+    # at this build, and the strip says so (EPIC3-07 chip coverage).
+    status["as_of"] = datetime.datetime.now(datetime.timezone.utc).strftime(
+        "%Y-%m-%d %H:%M UTC")
 
     # The work rail + homepage proof tiles (EPIC3-07). Offline builds carry
     # fixtures from fallback_state(); live builds resolve everything from
