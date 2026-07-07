@@ -11,6 +11,6 @@
 #   updated         ISO date of the last editorial pass
 
 featured: "kdc"
-featured_note: "KDC launched this week with a seed dataset of 33 project-sites across seven states, and its site now plots every tracked site on a filterable, status-coloured map."
-week_note: "KDC joined the studio this week, tracking US data center projects — announcements, permits, construction — as an open dataset. Its first release covers 33 project-sites resolved from 183 source signals, and the site now has a browsable map with per-record locator pages. Elsewhere on the portal, it was a quiet week."
-updated: "2026-07-06"
+featured_note: "KDC launched this week with a seed dataset of 33 project-sites across seven states, its site now plots every tracked site on a filterable, status-coloured map, and a new case study documents how the project is built and maintained."
+week_note: "KDC joined the studio this week, tracking US data center projects — announcements, permits, construction — as an open dataset. Its first release covers 33 project-sites resolved from 183 source signals, and the site now has a browsable map with per-record locator pages. A case study published this week walks through how the project went from an empty repository to a live, source-cited site, with every step recorded through reviewed pull requests. Elsewhere on the portal, it was a quiet week."
+updated: "2026-07-07"
