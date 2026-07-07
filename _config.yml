@@ -15,7 +15,7 @@ lang: en
 url: "https://bussetech.com" # overlaid from platform.yml domain at build
 baseurl: ""
 
-remote_theme: bussetech/theme@v0.8.0 # www v2 component kit (EPIC3-07); canary bump from v0.6.0
+remote_theme: bussetech/theme@v0.9.0 # gnome-card igotchi overlay (EPIC3-09); merge only after theme v0.9.0 is tagged + kdc canary soaks
 plugins:
   - jekyll-remote-theme
 
