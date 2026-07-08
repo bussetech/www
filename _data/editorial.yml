@@ -11,6 +11,6 @@
 #   updated         ISO date of the last editorial pass
 
 featured: "kdc"
-featured_note: "KDC published a case study this week on how the dataset was built — from an empty repo to a live, source-cited site, with a ledger entry for every run and every change reviewed as a pull request. It also launched with 33 project-sites across seven states and a filterable, status-coloured map."
-week_note: "KDC joined the studio this week, tracking US data center projects — announcements, permits, construction — as an open dataset. Its first release covers 33 project-sites resolved from 183 source signals, the site gained a browsable map with per-record locator pages, and a case study now documents how the whole thing gets built and kept up to date."
-updated: "2026-07-07"
+featured_note: "KDC is the studio's flagship dataset — US data center projects tracked from announcements, permits, and construction as an open, source-cited record. It launched with 33 project-sites across seven states, a filterable status-coloured map with per-record locator pages, and a case study documenting how the dataset is built and kept current — a ledger entry for every run, every change a reviewed pull request. It is now in an unattended-reliability soak, with a re-verdict on how much of it runs without a hand on the wheel booked for 2026-07-19."
+week_note: "The studio turned outward: the portal, a how-it-works page, and KDC's case study went live, each claim scoped to what a receipt can back. We then audited our own public numbers against their sources and shipped the fixes — the homepage record count, a stale cost figure, a couple of wording overclaims — because the receipt discipline we describe has to hold on our own pages first. Next up are the studio's first channel posts, held until a share-of-model-voice baseline is measured so progress is counted honestly from zero."
+updated: "2026-07-08"
