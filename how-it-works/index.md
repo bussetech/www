@@ -58,8 +58,9 @@ trade is deliberate — expressive orchestration for total auditability.
 None of this is aspiration; it runs in public. Watch a real one:
 [kdc#124](https://github.com/bussetech/kdc/pull/124) is a dataset PR proposed
 by `gn_kdc_records`, checks visible, merged by the operator. The
-[kdc Actions history](https://github.com/bussetech/kdc/actions) shows the
-scheduled runs themselves, successes and failures alike.
+[kdc Actions history](https://github.com/bussetech/kdc/actions) shows the CI
+those PRs pass through, successes and failures alike; the scheduled gnome runs
+that open them execute in the control repo and land in the ledger.
 
 ## The ledger
 

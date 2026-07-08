@@ -296,7 +296,8 @@ def count_dataset_records(registry: dict, tok: str | None) -> tuple[int, list[st
             continue
         try:
             entries = gh_get(f"/repos/{org}/{repo['name']}/contents/data/sites", tok)
-            n = len([e for e in entries if e.get("type") == "file"])
+            n = len([e for e in entries
+                     if e.get("type") == "file" and e.get("name", "").endswith(".yml")])
         except Exception as e:
             warn(f"tiles: could not count records in {repo['name']}: {e}")
             continue
@@ -821,15 +822,18 @@ def main() -> int:
         if chip:
             status["cost"] = chip
 
-    # Run-health chip (EPIC3-07 chip coverage): runs + errors this week,
-    # straight from the ledger aggregate already fetched for the cost chip.
+    # Run-health chip (EPIC3-07 chip coverage): runs + errors for the last
+    # completed ISO week, straight from the ledger aggregate already fetched
+    # for the cost chip. Labeled "last week" — the aggregate covers the most
+    # recent *closed* week, not the in-progress one; naming it honestly keeps
+    # the chip from understating current-week errors.
     # Rendered NOMINAL like the subscriber chip — a count is a metric, and no
     # error-rate threshold has been ruled (inventing one here would be a
     # policy act; a sysop ruling can colour it later). Showing the error
     # count unprompted is the point: failures are part of the receipt.
     week = (costs or {}).get("week") or {}
     if isinstance(week.get("runs"), int):
-        label = f"{week['runs']:,} runs this week"
+        label = f"{week['runs']:,} runs last week"
         if isinstance(week.get("errors"), int):
             label += f" · {week['errors']:,} errored"
         status["runs"] = {"status": "ok", "label": label,
