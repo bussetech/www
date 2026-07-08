@@ -15,7 +15,7 @@ lang: en
 url: "https://bussetech.com" # overlaid from platform.yml domain at build
 baseurl: ""
 
-remote_theme: bussetech/theme@v0.10.0 # sortable-table leaderboard + page rail; merge only after theme v0.10.0 is tagged
+remote_theme: bussetech/theme@v0.11.0 # compact rail signup + signup_rail opt-out (fixes homepage double capture)
 plugins:
   - jekyll-remote-theme
 
