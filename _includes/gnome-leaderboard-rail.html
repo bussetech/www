@@ -16,5 +16,8 @@
      default_sort="tokens"
      compact=true
      caption="Gnome leaderboard: stage, lifetime tokens, and runs per gnome, sorted by tokens" %}
+  {%- comment -%} Capture below the leaderboard (sysop ruling: table first
+      on this page); compact treatment comes from the theme's rail styles. {%- endcomment -%}
+  {% include signup.html placement="www-rail" %}
 </section>
 {%- endif -%}

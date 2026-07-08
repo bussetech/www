@@ -44,6 +44,10 @@ studio:
   # only the aggregate count. Double opt-in + open-tracking-off are provider-side.
   signup:
     enabled: true
+    # Site-wide right-rail capture (compact treatment, theme v0.11.0); the
+    # homepage opts out (signup_rail: false) — it has its own inline block.
+    rail: true
+    rail_placement: "www-rail"
     action: "https://buttondown.com/api/emails/embed-subscribe/bussetech"
     email_field: email
     # Capture copy: gn_gtm_copywriter's www v2 draft, variant 1 (T3 lead),
