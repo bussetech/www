@@ -1,0 +1,20 @@
+{%- comment -%}
+  Gnome leaderboard — fills the page rail on /gnomes/ (theme `rail:` front
+  matter, v0.10.0). Rows come from _data/studio/leaderboard.json, derived at
+  build from igotchi.json on the platform ledger branch (ADR-0036 display
+  plane). Default sort: lifetime tokens, descending — the igotchi score.
+  Offline/fixture builds carry no leaderboard and the rail renders nothing.
+{%- endcomment -%}
+{%- assign lb = site.data.studio.leaderboard -%}
+{%- if lb and lb.size > 0 -%}
+<section class="stack">
+  <h2>Leaderboard</h2>
+  <p class="card__desc">Lifetime tokens from the run ledger — the igotchi score. Click a column to re-sort.</p>
+  {% include sortable-table.html
+     columns=site.data.leaderboard_columns
+     rows=lb
+     default_sort="tokens"
+     compact=true
+     caption="Gnome leaderboard: stage, lifetime tokens, and runs per gnome, sorted by tokens" %}
+</section>
+{%- endif -%}
