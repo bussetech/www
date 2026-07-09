@@ -40,13 +40,32 @@ sortable_tables: true
 {%- endif -%}
 {%- endfor -%}
 
-{%- assign unaffiliated = gnomes | where_exp: "g", "g.knoll == nil" -%}
+{%- comment -%}
+  Retired gnomes (platform ADR-0045) have left their knoll and would fall
+  into "Unaffiliated"; they get their own section instead — they are
+  ancestors, not drifters. Cards keep the earned stage, frozen score, and
+  the "ancestor of" line; the work they did is still in the ledger.
+{%- endcomment -%}
+{%- assign unaffiliated = gnomes | where_exp: "g", "g.knoll == nil and g.retired != true" -%}
 {%- if unaffiliated.size > 0 -%}
 <section aria-label="Unaffiliated gnomes">
   <h2>Unaffiliated</h2>
   <p>Gnomes that serve the studio directly, outside any knoll.</p>
   <div class="grid grid--3">
     {%- for g in unaffiliated -%}
+    {% include gnome-card.html gnome=g %}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{%- assign ancestors = gnomes | where: "retired", true -%}
+{%- if ancestors.size > 0 -%}
+<section aria-label="Ancestors (retired gnomes)">
+  <h2>Ancestors</h2>
+  <p>Retired gnomes stay in the codebase and on this board — dormant, with the stage they earned and the score frozen where their last run left it. Each card names the gnome that carries its duty now.</p>
+  <div class="grid grid--3">
+    {%- for g in ancestors -%}
     {% include gnome-card.html gnome=g %}
     {%- endfor -%}
   </div>
