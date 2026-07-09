@@ -1,13 +1,15 @@
 ---
 layout: page
-title: "Repo-Native Agent Operations"
-eyebrow: Whitepaper · v1.2.0 · 2026-07-08
-description: "The architecture of the Bussetech Software Studio: a one-operator studio whose workforce is a fleet of governed AI agents, run entirely through a Git hosting platform. Every claim checkable by git log."
-permalink: /whitepaper/
-updated: 2026-07-08
+title: "Repo-Native Agent Operations (v1.1.1 — archived)"
+eyebrow: Whitepaper · v1.1.1 · 2026-07-07 · archived
+description: "Archived v1.1.1 of the studio's whitepaper. The canonical URL always serves the latest version."
+permalink: /whitepaper/v1.1.1/
+updated: 2026-07-07
 ---
 
-{% include tldr.html text="The delivery gap in agentic software is a system-of-record gap, not a tooling gap. This paper describes repo-native agent operations: the Git hosting platform as the sole message bus, governance layer, memory, and ledger for an agent organization — seven architectural commitments, evaluated against a live one-operator deployment whose every claim is checkable by git log. This URL always serves the latest version; prior releases are archived and linked in the changelog." %}
+{% include alert.html label="Archived version" body="This is whitepaper v1.1.1, kept verbatim for the record (the paper's semver law archives every prior release). The canonical <a href='/whitepaper/'>whitepaper URL</a> always serves the latest version." %}
+
+{% include tldr.html text="The delivery gap in agentic software is a system-of-record gap, not a tooling gap. This paper describes repo-native agent operations: the Git hosting platform as the sole message bus, governance layer, memory, and ledger for an agent organization — six architectural commitments, evaluated against a live one-operator deployment whose every claim is checkable by git log. This URL always serves the latest version; prior releases are archived and linked in the changelog." %}
 
 <script type="application/ld+json">
 {
@@ -15,9 +17,9 @@ updated: 2026-07-08
   "@type": "TechArticle",
   "headline": "Repo-Native Agent Operations: The Bussetech Software Studio Architecture",
   "description": "A pattern in which the repository platform is the sole message bus, governance layer, memory substrate, and financial ledger for an agent organization.",
-  "version": "1.2.0",
+  "version": "1.1.1",
   "datePublished": "2026-07-05",
-  "dateModified": "2026-07-08",
+  "dateModified": "2026-07-07",
   "author": { "@type": "Organization", "name": "Bussetech Software Studio", "legalName": "Eszett, LLC" },
   "publisher": { "@type": "Organization", "name": "Bussetech Software Studio", "legalName": "Eszett, LLC" },
   "license": "https://creativecommons.org/licenses/by/4.0/",
@@ -33,7 +35,7 @@ releases.
 
 ## Abstract
 
-We describe the architecture and first operating weeks of the Bussetech
+We describe the architecture and first operating evidence from the Bussetech
 Software Studio: a one-operator software studio whose workforce is a fleet of
 governed AI agents (*gnomes*) managed entirely through a Git hosting platform.
 The industry's agent conversation is dominated by orchestration frameworks and
@@ -43,16 +45,13 @@ leading blockers ([Turion, 2026](https://turion.ai/blog/state-of-ai-agents-enter
 Our position is that these are not tooling gaps but *system-of-record* gaps. We
 present *repo-native agent operations*: a pattern in which the repository
 platform is the sole message bus, governance layer, memory substrate, and
-financial ledger for an agent organization. We detail seven architectural
+financial ledger for an agent organization. We detail six architectural
 commitments (the gnome contract, propose-don't-decide, the two-layer output
-contract, trust-tier manifests, runner-level cost receipts, the guidance
-ledger, and cycle-class scheduling — "the crank") and evaluate them against a
-live deployment across two structured build campaigns (23 agent sessions) that
-bootstrapped the platform, shipped a data product sustained by dispatched,
-ledger-journaled cycles with unattended self-refresh in live verification, and
-then audited itself honestly enough to report which of its own proofs remain
-outstanding. Each claim is situated against prior art, and we are explicit
-about which elements are novel synthesis versus established practice.
+contract, trust-tier manifests, runner-level cost receipts, and the guidance
+ledger) and evaluate them against a live deployment that bootstrapped itself in
+thirteen agent sessions and shipped a self-maintaining data product in the same
+week. Each claim is situated against prior art, and we are explicit about which
+elements are novel synthesis versus established practice.
 
 > **Provenance.** Every operational number in this paper traces to the studio's
 > own repositories, decision records, and run ledger. The companion research
@@ -108,7 +107,7 @@ product behavior.
 Helicone, Phoenix) instruments traces, tokens, and cost, with the OpenTelemetry
 GenAI semantic conventions emerging as a standard. These systems assume an
 external observability plane. We journal at the single execution path and commit
-run records to the repository itself (§4.5) — a deliberately smaller,
+receipts to the repository itself (§4.5) — a deliberately smaller,
 auditable-by-git alternative for organizations whose scale permits it.
 
 **Agent memory.** The memory literature has converged on
@@ -152,7 +151,7 @@ and `private-published` (public site, private source) are declared per repositor
 and enforced by leak checks in CI — the mechanism by which public transparency
 and NDA client work coexist.
 
-## 4. The seven commitments
+## 4. The six commitments
 
 ### 4.1 The gnome contract
 
@@ -190,13 +189,7 @@ override to merge, making every merge a deliberate act.
 `input_trust: untrusted` is a manifest field with structural consequences:
 PR-only output, no secrets in context beyond the model key, and fetched content
 handled as data rather than instructions, with injection lines included in the
-gnome's own test fixtures. The second campaign extended the pattern to
-autonomous intake: untrusted gnomes never fetch. A deterministic,
-allowlist-governed fetch layer (a source registry changed only by PR;
-robots-aware; rate- and budget-capped) normalizes web content into
-provenance-stamped scratch files that cross the trust boundary as data, and an
-injection line planted in fetch fixtures provably does not alter gnome behavior
-(dry-run parity testing). Prompt-injection posture is thereby declared and
+gnome's own test fixtures. Prompt-injection posture is thereby declared and
 enforced *outside the prompt*. To our knowledge, trust tiering as a
 manifest-level contract enforced by the execution harness (rather than as
 per-prompt hygiene) is not described as an integrated pattern in the current
@@ -225,14 +218,9 @@ aggregates weekly reports and raises threshold alerts (80% of budget; 3×
 trailing-average spikes). This differs from the observability-SaaS pattern in
 locus and audience: the ledger lives *in the organization's own git history*,
 reviewable by the same mechanics as everything else, at zero additional
-infrastructure. The seeding day's headline economics (2026-07-05) were legible
-precisely because of this: a 34-record, 187-signal sourced dataset cost ≈ $4.86
-of gnome spend to research, normalize, and publish, and failed runs journal too,
-with their failure class. The ledger also feeds *routing*: model choice is a
-per-gnome manifest field, and a gnome moves to a cheaper model only by passing
-its own fixture suite on the candidate (three of the fleet run a mid-tier model
-today via that gate; the highest-volume research gnome is deliberately held
-pending adversarial-fixture parity). We do not claim the approach scales to
+infrastructure. The pilot's headline economics were legible precisely because of
+this: a 33-record, 183-signal sourced dataset cost ≈ $4.48 of gnome spend to
+research, normalize, and publish. We do not claim the approach scales to
 high-frequency agent fleets; we claim it is *correct-sized* for studio-scale
 operations and strictly more auditable.
 
@@ -256,72 +244,32 @@ answered once becomes policy.
 </ol>
 </figure>
 
-Thirteen entries exist at this writing, and the loop runs on live decisions at
-speed — twice in the first week, a question raised in the morning became
-injected policy the same day (a data-modeling ruling, "negative outcomes are
-records, not omissions," and a client-privacy amendment produced by
-stress-testing day-old architecture decisions against a real intake). Read
-against the memory literature (§2), this is procedural memory that is
-*human-authored, git-versioned, and citation-bearing*: slower than learned
-memory, and deliberately so, because in a client-facing studio the provenance of
-policy is worth more than the latency of acquiring it. We believe the closed
-loop (decision issue → ruling → distilled artifact → runtime injection, entirely
-in repository primitives) is the studio's strongest candidate for a genuinely
-novel operational pattern.
-
-### 4.7 Cycle classes and the crank
-
-The second campaign surfaced a subtle failure mode: the studio had encoded
-cadence where dependency was meant — 27 cron-scheduled workflows mimicking human
-rituals (weekly digests, monthly reviews) on a system that had just built two
-release campaigns in a single day and then had to wait for the calendar to prove
-its own machinery. The corrective is a trigger taxonomy: every recurring process
-is classified by *what actually advances it*.
-
-- **Conveyor:** upstream completion; chained, never scheduled.
-- **Queue:** work exists; run till empty, honest no-op.
-- **Reflection:** an activity quantum since last close, not calendar windows;
-  reports read "Cycle N," never "this week."
-- **World:** the only class that legitimately earns cron, because external
-  reality accumulates change on its own clock.
-- **Sentinel:** invariant verification, cranked before claims.
-- **Ruling:** human action, with deadline defaults.
-
-A *crank* is a composed, budget-capped advance of a whole pipeline on demand.
-The doctrine line the studio reviews workflows against: *cron is a confession*.
-Either the process is world-paced, or the schedule is a dependency wearing a
-costume. This taxonomy also decomposes autonomy claims honestly: cycle
-*correctness* is provable immediately by cranking; *unattended reliability* is
-provable only by soak, and the two proofs are reported separately (§6).
+Five entries existed at pilot close, and the loop ran on live decisions —
+including a data-modeling ruling ("negative outcomes are records, not omissions")
+that now governs every applicable gnome. Read against the memory literature
+(§2), this is procedural memory that is *human-authored, git-versioned, and
+citation-bearing*: slower than learned memory, and deliberately so, because in a
+client-facing studio the provenance of policy is worth more than the latency of
+acquiring it. We believe the closed loop (decision issue → ruling → distilled
+artifact → runtime injection, entirely in repository primitives) is the studio's
+strongest candidate for a genuinely novel operational pattern.
 
 ## 5. Organizational constructs
 
 **Knolls.** Gnomes are grouped into *knolls* — teams with a shared, knoll-scoped
 knowledge base built on the same distill-and-inject machinery as guidance. As of
-this version the knoll framework has shipped (ADR-0033): four knolls are live (a
-studio management knoll, a kdc project knoll, the GTM knoll of seven gnomes
-founded in the third campaign, and the Client Desk's knoll); a gnome belongs to
-at most one, membership is two-way-validated by registry sync, and the injected
-knowledge base is capped per run. The registry's `level` field (platform vs
-project) separates studio-serving from product-serving gnomes.
+this version the knoll framework has shipped (ADR-0033): three knolls are live (a
+studio management knoll, a kdc project knoll, and a GTM knoll of seven gnomes); the
+registry's `level` field (platform vs project) separates studio-serving
+from product-serving gnomes, and the guidance injection seam it reuses is
+live today.
 
-**The Client Desk.** Client engagements run through a designed lifecycle
-function staffed by desk gnomes (shipped as of this version), using
-industry-standard stages (Inquiry → Discovery → Proposal → Delivery → Launch →
-Support) with explicit human-approved gates and journey variants declared as
-gate-paths. The naming doctrine generalizes: *charm lives in the workforce,
-never in the process* — clients meet characterful gnomes moving work through
-vocabulary no one has to learn. Every commitment-shaped action (pricing,
-contracts, promises) structurally terminates at the human operator.
-
-**The personality firewall.** For brand purposes, gnomes carry personality
-overlays derived from their actual run history (a Tamagotchi-inspired profile
-keyed to lifetime tokens, computed by plain code from the ledger and registry,
-never by a model). The architectural commitment is a hard firewall: personality
-artifacts live outside every gnome context path and the harness must never load
-them — display-only by construction, verified in CI in both directions, so
-relatability can never contaminate behavior. As of this version the overlay is
-live: the portal's gnome directory renders the derived profiles today.
+**The personality firewall.** For brand purposes, gnomes will carry personality
+overlays derived from their actual run history (a Tamagotchi-inspired score keyed
+to lifetime tokens). The architectural commitment is a hard firewall: personality
+artifacts live outside gnome context paths and the harness must never load them —
+display-only by construction, verified in CI, so relatability can never
+contaminate behavior. We flag this as a design principle with the build pending.
 
 **The sysop console.** There is no bespoke dashboard. A documented session
 pattern (standup / triage / dispatch / inspect) makes any fresh agent session in
@@ -329,63 +277,38 @@ the control repo a complete operations console, with the rule that every outcome
 is written back to the repository before the session ends. Terminal scrollback is
 not a record.
 
-## 6. Evaluation: two build campaigns
+## 6. Evaluation: the bootstrap and the pilot
 
-**Campaign one (bootstrap + pilot).** Thirteen structured agent sessions built
-the platform, each ending in a handoff document; the pilot project (kdc, a US
-data-center tracker) was then founded *by the platform's own machinery*:
-templated brief → founder gnome's reuse analysis (which improved on the human
-brief, folding a proposed third gnome into a mode of an existing one) →
-repository, DNS, CI, and portal presence with no hand-edits → two project gnomes
-producing sourced records through the full safety stack. The most instructive
-result was negative: the simulation layer validated the happy path, and all four
-platform bugs found during the pilot were input-texture failures (punctuation in
-free text, unquoted dates, token-URL remotes, a vendor CORS outage) that bland
-fixtures could never reach. The corrective (an adversarial fixture policy
-enforced in CI) is now standing platform law, and it paid immediately: its first
-hostile fixtures found a real encoding bug on arrival. We offer the general
-finding: *fixture blandness is a coverage gap distinct from scenario coverage*,
-and live use will find it.
+The platform was built by thirteen structured agent sessions over three days,
+each ending in a handoff document; the pilot project (kdc, a US data-center
+tracker) was then founded *by the platform's own machinery*: templated brief →
+founder gnome's reuse analysis (which improved on the human brief, folding a
+proposed third gnome into a mode of an existing one) → repository, DNS, CI, and
+portal presence with no hand-edits → two project gnomes producing sourced records
+through the full safety stack. Numbers at pilot close (early July 2026): 6 repos,
+11 registered gnomes (100% dry-run simulation coverage), 20 ADRs, 5 guidance
+entries, 33 site records from 183 per-source signals across 7 states, every fact
+source-cited, honest negatives included. The evidence has kept accruing since:
+as of this version (2026-07-06) the studio stands at 7 repos, 18 gnomes, 34 ADRs,
+8 guidance entries, and 36 records — the same machinery, more evidence, every
+count verifiable by `git log` (platform counts against the platform repository;
+records/signals against the kdc repository).
 
-**Campaign two (hardening + autonomy).** Ten further sessions landed the strata
-decisions (project archetypes, a client-privacy tier, a SaaS boundary),
-fixture-gated model routing, failure-class self-healing, the autonomous
-source-fetch layer, and the cycle-class taxonomy (§4.7); an eleventh planned
-session (an early email-capture funnel) never ran, and the retrospective records
-the absence rather than papering over it. The close was an exercise in the
-honesty machinery under schedule pressure: the entire campaign ran in one
-wall-clock day, so every capability whose proof *is* elapsed time (scheduled
-fires, self-heal under live failure, cadence reports) was wired but unobserved
-at close. The closing session reported "not yet" as the autonomy verdict, with
-the numbers that proved it (zero schedule-triggered runs; a 19% research-gnome
-error rate with human fix-commits as recovery; every run manually dispatched),
-rather than manufacturing the asked-for conclusion. Two sessions given false
-premises audited reality instead of complying. We regard a system that can grade
-itself "not yet" under pressure as stronger evidence for the governance
-architecture than a flattering close would have been.
-
-Numbers as of this version (2026-07-08, after a third campaign turned the studio
-outward: go-to-market, the Client Desk, a portal rebuild, a published case
-study): 7 registry entries, 20 registered gnomes in four knolls (100% dry-run
-coverage, adversarial variants required), 40 ADRs, 13 guidance entries, and 162
-site records from 716 per-source signals across 48 states — every fact
-source-cited, honest negatives included (cancelled projects stay on the record).
-Growth from 34 to 162 records was studio-*dispatched* research (cumulative gnome
-spend on the dataset ≈ $13.55 as of the 2026-07-07 ledger; the public
-[case study](https://kdc.bussetech.com/case-study/) carries the dated
-citations); unattended self-refresh is in a live soak with a verdict due
-2026-07-19, and a future revision will report it either way. Every count is
-verifiable by `git log` (platform counts against the platform repository;
-records and signals against the kdc repository).
+The most instructive result was negative: the simulation layer validated the
+happy path, and all four platform bugs found during the pilot were input-texture
+failures (punctuation in free text, unquoted dates, token-URL remotes, a vendor
+CORS outage) that bland fixtures could never reach. The corrective, an
+adversarial fixture policy enforced in CI, is now standing platform law. We
+offer this as a general finding for the agent-evaluation discourse: *fixture
+blandness is a coverage gap distinct from scenario coverage*, and live use will
+find it.
 
 ## 7. Limitations
 
-We state these plainly. (1) *Scale*: one operator, seven repos, twenty gnomes at
+We state these plainly. (1) *Scale*: one operator, seven repos, eighteen gnomes at
 the time of writing; none of the ledger or governance claims have been tested at
 enterprise fleet scale, and the in-repo ledger would need the artifact-collector
-variant well before high-frequency operation. Relatedly, *scheduled autonomy is
-dispatch-proven but soak-unproven at this version*: §6 reports this plainly, and
-a future minor bump will report the soak verdict. (2) *Platform coupling*: the
+variant well before high-frequency operation. (2) *Platform coupling*: the
 pattern is Git-host-shaped; we use GitHub primitives heavily, and while the
 portability contract covers project repos, the operational fabric itself would
 need porting work. (3) *No orchestration expressiveness*: repository primitives
@@ -399,20 +322,16 @@ repositories — the successor's onboarding document is the organization itself.
 
 ## 8. Future work
 
-Much of the original future-work list has since shipped and now carries its own
-operating evidence: autonomous research intake behind an allowlisted,
-deterministic fetch layer; model routing with fixture-gated downgrades (under
-which a downgrade may not regress a gnome's own fixtures before it takes
-effect); the knoll knowledge-base framework (ADR-0033), live across four knolls;
-the Client Desk lifecycle; and the display-only personality overlay under its
-CI-enforced firewall. What remains genuinely ahead: the scheduled-autonomy soak
-(the fetch layer and self-heal are built and dispatch-proven; their unattended
-weeks are the outstanding evidence, with a verdict due 2026-07-19, and we will
-report it either way); multi-project and multi-operator decoupling of the
-control plane; a multi-tenant SaaS stratum to be proven on the studio's own
-client portal before any client engagement depends on it; and brownfield
-adoption — an intake gnome that classifies and onboards existing repositories
-into the governance fabric.
+Three items on the original future-work list have since shipped and now carry their
+own operating evidence: autonomous research intake behind an allowlisted,
+deterministic fetch layer; model routing with fixture-gated downgrades (a
+downgrade may not regress a gnome's own fixtures before it takes effect); and the
+knoll knowledge-base framework (ADR-0033), now live across a studio, a kdc, and a
+GTM knoll. What remains genuinely ahead: a multi-tenant SaaS
+stratum to be proven on the studio's own client portal before any client
+engagement depends on it; the display-only personality overlay under its
+CI-enforced firewall; and brownfield adoption — an intake gnome that classifies
+and onboards existing repositories into the governance fabric.
 
 ## 9. Conclusion
 
@@ -434,10 +353,9 @@ Primary external sources:
 [MemGPT, arXiv:2310.08560](https://arxiv.org/abs/2310.08560) ·
 [Nygard: Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) ·
 [GitOps.tech](https://www.gitops.tech/).
-Internal sources: the platform repository (ADRs, guidance entries, the
-EPIC1–EPIC3 retrospectives, and the run ledger) and the kdc repository (records,
-signals, the public case study). The studio's claim is that these are checkable,
-so they are the citation.
+Internal sources: the platform repository (ADRs, guidance entries, the EPIC1 and
+EPIC2 retrospectives, and the run ledger). The studio's claim is that these are
+checkable, so they are the citation.
 
 ## Versioning & changelog
 
@@ -449,9 +367,7 @@ version; prior versions are archived at `/whitepaper/vX.Y.Z/`.
 
 | Version | Date | Change |
 | --- | --- | --- |
-| **1.2.0** (this page) | 2026-07-08 | **Lineage reconciliation** (minor: evidence refresh + restored sections). A v0.2.0 revision (planning surface, 2026-07-06) never reached the repo while the published lineage accrued its own improvements; this release merges the two. From v0.2.0: §4.7 (cycle classes and the crank, the seventh commitment), the source-fetch design in §4.3, routing evidence in §4.5, the Client Desk in §5, the two-campaign evaluation in §6, and the abstract rebuilt without the autonomy overclaim. From the published lineage: the v1.0.0 claim verification, the v1.1.0 evidence refresh, and the v1.1.1 style pass. Abstract autonomy claim scoped to the verified ceiling: dispatched cycles proven; unattended self-refresh in soak, verdict due 2026-07-19. All quantitative claims re-verified against live state 2026-07-08: 20 gnomes in 4 knolls (was 18, no knoll count), 40 ADRs (was 34), 13 guidance entries (was 8), 162 records / 716 signals / 48 states (was 36 records); session count corrected to 23 (campaign two ran ten sessions; its eleventh prompt never ran). Client Desk and personality overlay + firewall moved from pending to shipped. |
-| [**1.1.1**](/whitepaper/v1.1.1/) | 2026-07-07 | Style pass (patch), per the studio's External Style Guide v1 (STYLE-01): banned-tic cleanup only (emdash budget, mid-sentence bold, listed constructs and vocabulary). No claim, number, citation, or structural change. |
+| **1.1.1** (this page, archived) | 2026-07-07 | Style pass (patch), per the studio's External Style Guide v1 (STYLE-01): banned-tic cleanup only (emdash budget, mid-sentence bold, listed constructs and vocabulary). No claim, number, citation, or structural change. |
 | [**1.1.0**](/whitepaper/v1.1.0/) | 2026-07-06 | Evidence refresh (minor), from the Scholar charter's claim-drift check against live state (EPIC3-04). Current-state counts updated: 18 gnomes (was 11), 34 ADRs (was 32), 8 guidance entries (was 7), 36 records (was 35); repos unchanged at 7. Knoll framework moved from "not yet built" to **shipped** (ADR-0033) — the studio, kdc, and GTM knolls are now live; the GTM knoll (seven gnomes) was founded in EPIC3-04. No architectural claim changed — the architecture anticipated knolls. |
 | [**1.0.0**](/whitepaper/v1.0.0/) | 2026-07-06 | First ratified release. Editorial pass against live repository state: removed an unsupported "first six months of operating evidence" claim; dated the pilot-close snapshot and added a verifiable current-state line; moved autonomous research intake and fixture-gated model routing from future work to shipped; refreshed internal-source ranges; clarified knoll and personality-overlay build status. No architectural claim changed. |
-| 0.2.0 | 2026-07-06 | Draft revision (planning surface; reached the repo at 1.2.0 — see the reconciliation note above). Added §4.7, the seven-commitments structure, source-fetch and routing material, the two-campaign evaluation, and an abstract free of the autonomy overclaim. |
 | 0.1 | 2026-07-05 | Initial draft (planning surface). |
