@@ -25,3 +25,16 @@ jobs:
       # STYLE-01: warnings block on www (docs/gtm/style.md §4.2); page-level
       # waivers live in .style-lint.json, each with a reason.
       style_lint: strict
+
+  leak-gate:
+    # Fail-closed backstop (INC-2026-07-08-01, ADR-0022 §3, GD-0017): published
+    # content must carry no private-repo issue numbers or internal planning
+    # taxonomy. A slip by a human or a gnome fails CI instead of shipping.
+    if: ${{ github.repository_owner == 'bussetech' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/check_public_content.py
