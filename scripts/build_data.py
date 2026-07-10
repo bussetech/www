@@ -134,6 +134,13 @@ def normalize_registry(platform: dict, source: str) -> dict:
         # check is belt and braces for a sim entry with a mangled status.
         if lifecycle == "simulation" or str(r.get("name", "")).startswith("sim-"):
             continue
+        # Client privacy tier (ADR-0022 §3): client: true repos never reach
+        # the portal data at all — no card, no detail stub, no feed fetch,
+        # no name/description in any emitted JSON — REGARDLESS of `listed`
+        # (the schema forces listed: false; this is the defensive layer the
+        # ADR requires, with EAAP's founding as its deadline).
+        if bool(r.get("client", False)):
+            continue
         listed = bool(r.get("listed", False))
         entry = {
             "name": r["name"],
