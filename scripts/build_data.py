@@ -382,18 +382,11 @@ def build_tiles(registry: dict, status: dict, costs: dict | None,
             "link_label": "read the cost notes",
         })
 
-    heartbeat = status.get("heartbeat", {})
-    if heartbeat.get("label") != "unknown":
-        soak = soak_state(platform_repo, tok)
-        kdc_study = next((s.get("url") for s in case_studies.get("studies", [])
-                          if s.get("status") == "published" and s.get("url")), None)
-        tiles.append({
-            "value": "passing" if heartbeat.get("status") == "ok" else "failing",
-            "label": "cross-repo chain test",
-            "detail": (soak + f" · {today}") if soak else f"derived from open alert issues · {today}",
-            "href": kdc_study or "/whitepaper/",
-            "link_label": "read the case study" if kdc_study else "read the whitepaper",
-        })
+    # The cross-repo chain-test tile was removed from the public homepage
+    # (STEERCO 2026-07-10, ADR-0047): it can render "failing" — a red
+    # operational signal that belongs on the authenticated client-portal status
+    # page, not broadcast to un-onboarded visitors. The soak-state proof moves
+    # there with it. Public tiles stay non-red-capable receipts (records, spend).
     return tiles
 
 
@@ -886,6 +879,25 @@ def main() -> int:
         case_studies = fetch_case_studies(platform_repo, tok)
         status["tiles"] = build_tiles(registry, status, costs, case_studies,
                                       platform_repo, tok)
+
+    # Public / client-portal status boundary (STEERCO 2026-07-10, ADR-0047).
+    # Any signal that can render RED (error) — the chain-test heartbeat, UAT,
+    # sims, the red-alert rollup, and the budget-breach-capable cost chip — is
+    # relegated to the authenticated client-portal status page, NOT broadcast on
+    # the public homepage to visitors who haven't been onboarded on the system's
+    # nuances. The public strip keeps only non-red-capable transparency
+    # (gnomes/runs/subscribers chips; records/spend tiles). This partition is the
+    # rule, not a one-off scrub of today's open platform-e2e issue.
+    #
+    # portal_status.json is a _data file: Jekyll loads it into site.data but does
+    # NOT emit it as a served URL, and NO public template may render it. When the
+    # authenticated portal status page is built (issue tracked in ADR-0047) it
+    # re-derives these from control-repo issues behind auth.
+    RED_CAPABLE = ("heartbeat", "uat", "sims", "alerts", "cost")
+    portal_status = {k: status.pop(k) for k in RED_CAPABLE if k in status}
+    portal_status["as_of"] = status.get("as_of")
+    (DATA_DIR / "portal_status.json").write_text(
+        json.dumps(portal_status, indent=2), encoding="utf-8")
 
     (DATA_DIR / "case_studies.json").write_text(
         json.dumps(case_studies, indent=2), encoding="utf-8")
