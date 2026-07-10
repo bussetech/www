@@ -694,6 +694,16 @@ def fallback_state() -> tuple[dict, dict]:
         "deployments": ["sample-project"],
         "status": "planned",
         "purpose": "Offline build fixture — exercises the knoll-less directory section.",
+    }, {
+        "name": "gn_sample_ancestor",
+        "display_name": "Gnome Sample Ancestor",
+        "level": "platform",
+        "home": "sample-project",
+        "version": "0.0.1",
+        "deployments": ["sample-project"],
+        "status": "retired",
+        "retirement": {"date": "2026-07-09", "succeeded_by": "gn_sample_fixture"},
+        "purpose": "Offline build fixture — exercises the Ancestors section and the retired chip (platform ADR-0045).",
     }], "knolls": [{
         "name": "sample-knoll",
         "purpose": "Offline build fixture — stands in for real knolls when studio state is unreachable.",
@@ -756,7 +766,18 @@ def main() -> int:
     for g in gnomes.get("gnomes", []):
         g["var"] = g.get("name", "")
         g["status_label"] = g.get("status", "")
-        g["status"] = "ok" if g.get("status") == "active" else "warn"
+        # Retired is a state of honor, not an alarm (platform ADR-0045): the
+        # chip reads "retired" on the ok signal and the card carries the
+        # ancestor line. Every other non-active status stays warn.
+        if g.get("status") == "retired":
+            g["retired"] = True
+            succ = (g.get("retirement") or {}).get("succeeded_by")
+            if succ:
+                g["ancestor_of"] = succ
+                g["status_label"] = f"retired — ancestor of {succ}"
+            g["status"] = "ok"
+        else:
+            g["status"] = "ok" if g.get("status") == "active" else "warn"
         if registry["org"] and g.get("home") in public:
             g["url"] = f"https://github.com/{registry['org']}/{g['home']}"
         if args.offline or "purpose" in g:
@@ -802,7 +823,11 @@ def main() -> int:
         stage_order = [s.get("name") for s in igotchi.get("stages", [])]
         leaderboard = [
             {
-                "gnome": name,
+                # Retired rows stay on the board with the score they earned
+                # (frozen by dormancy) and say so — honest history, never a
+                # silent drop (platform ADR-0045).
+                "gnome": f"{name} · retired" if p.get("status") == "retired" else name,
+                "gnome_sort": name,
                 "stage": p.get("glyph"),
                 "stage_sort": stage_order.index(p["stage"]) if p.get("stage") in stage_order else -1,
                 "tokens": p.get("score_display"),
