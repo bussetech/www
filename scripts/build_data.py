@@ -849,13 +849,19 @@ def main() -> int:
     # error-rate threshold has been ruled (inventing one here would be a
     # policy act; a sysop ruling can colour it later). Showing the error
     # count unprompted is the point: failures are part of the receipt.
+    # Public chip shows run VOLUME only. The error count is operational and
+    # moves to the portal (STEERCO 2026-07-10, ADR-0047): a public "N errored"
+    # is un-contextualized bad news to un-onboarded visitors. It is neither in
+    # the public label nor the public runs object — it rides `run_health` into
+    # portal_status.json below.
     week = (costs or {}).get("week") or {}
+    run_health = None
     if isinstance(week.get("runs"), int):
-        label = f"{week['runs']:,} runs last week"
+        status["runs"] = {"status": "ok", "label": f"{week['runs']:,} runs last week",
+                          "runs": week["runs"]}
         if isinstance(week.get("errors"), int):
-            label += f" · {week['errors']:,} errored"
-        status["runs"] = {"status": "ok", "label": label,
-                          "runs": week["runs"], "errors": week.get("errors")}
+            run_health = {"status": "ok", "runs": week["runs"], "errors": week["errors"],
+                          "label": f"{week['runs']:,} runs last week · {week['errors']:,} errored"}
 
     # Subscriber-count chip — the funnel datum (platform EPIC3-03, #98).
     # Omitted until capture is live and subscribers.json exists on the ledger.
@@ -895,6 +901,8 @@ def main() -> int:
     # re-derives these from control-repo issues behind auth.
     RED_CAPABLE = ("heartbeat", "uat", "sims", "alerts", "cost")
     portal_status = {k: status.pop(k) for k in RED_CAPABLE if k in status}
+    if run_health:  # run error count is portal-only; public keeps volume only
+        portal_status["run_health"] = run_health
     portal_status["as_of"] = status.get("as_of")
     (DATA_DIR / "portal_status.json").write_text(
         json.dumps(portal_status, indent=2), encoding="utf-8")
