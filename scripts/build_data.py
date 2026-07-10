@@ -382,18 +382,11 @@ def build_tiles(registry: dict, status: dict, costs: dict | None,
             "link_label": "read the cost notes",
         })
 
-    heartbeat = status.get("heartbeat", {})
-    if heartbeat.get("label") != "unknown":
-        soak = soak_state(platform_repo, tok)
-        kdc_study = next((s.get("url") for s in case_studies.get("studies", [])
-                          if s.get("status") == "published" and s.get("url")), None)
-        tiles.append({
-            "value": "passing" if heartbeat.get("status") == "ok" else "failing",
-            "label": "cross-repo chain test",
-            "detail": (soak + f" · {today}") if soak else f"derived from open alert issues · {today}",
-            "href": kdc_study or "/whitepaper/",
-            "link_label": "read the case study" if kdc_study else "read the whitepaper",
-        })
+    # The cross-repo chain-test tile was removed from the public homepage
+    # (STEERCO 2026-07-10, ADR-0047): it can render "failing" — a red
+    # operational signal that belongs on the authenticated client-portal status
+    # page, not broadcast to un-onboarded visitors. The soak-state proof moves
+    # there with it. Public tiles stay non-red-capable receipts (records, spend).
     return tiles
 
 
@@ -856,13 +849,19 @@ def main() -> int:
     # error-rate threshold has been ruled (inventing one here would be a
     # policy act; a sysop ruling can colour it later). Showing the error
     # count unprompted is the point: failures are part of the receipt.
+    # Public chip shows run VOLUME only. The error count is operational and
+    # moves to the portal (STEERCO 2026-07-10, ADR-0047): a public "N errored"
+    # is un-contextualized bad news to un-onboarded visitors. It is neither in
+    # the public label nor the public runs object — it rides `run_health` into
+    # portal_status.json below.
     week = (costs or {}).get("week") or {}
+    run_health = None
     if isinstance(week.get("runs"), int):
-        label = f"{week['runs']:,} runs last week"
+        status["runs"] = {"status": "ok", "label": f"{week['runs']:,} runs last week",
+                          "runs": week["runs"]}
         if isinstance(week.get("errors"), int):
-            label += f" · {week['errors']:,} errored"
-        status["runs"] = {"status": "ok", "label": label,
-                          "runs": week["runs"], "errors": week.get("errors")}
+            run_health = {"status": "ok", "runs": week["runs"], "errors": week["errors"],
+                          "label": f"{week['runs']:,} runs last week · {week['errors']:,} errored"}
 
     # Subscriber-count chip — the funnel datum (platform EPIC3-03, #98).
     # Omitted until capture is live and subscribers.json exists on the ledger.
@@ -886,6 +885,27 @@ def main() -> int:
         case_studies = fetch_case_studies(platform_repo, tok)
         status["tiles"] = build_tiles(registry, status, costs, case_studies,
                                       platform_repo, tok)
+
+    # Public / client-portal status boundary (STEERCO 2026-07-10, ADR-0047).
+    # Any signal that can render RED (error) — the chain-test heartbeat, UAT,
+    # sims, the red-alert rollup, and the budget-breach-capable cost chip — is
+    # relegated to the authenticated client-portal status page, NOT broadcast on
+    # the public homepage to visitors who haven't been onboarded on the system's
+    # nuances. The public strip keeps only non-red-capable transparency
+    # (gnomes/runs/subscribers chips; records/spend tiles). This partition is the
+    # rule, not a one-off scrub of today's open platform-e2e issue.
+    #
+    # portal_status.json is a _data file: Jekyll loads it into site.data but does
+    # NOT emit it as a served URL, and NO public template may render it. When the
+    # authenticated portal status page is built (issue tracked in ADR-0047) it
+    # re-derives these from control-repo issues behind auth.
+    RED_CAPABLE = ("heartbeat", "uat", "sims", "alerts", "cost")
+    portal_status = {k: status.pop(k) for k in RED_CAPABLE if k in status}
+    if run_health:  # run error count is portal-only; public keeps volume only
+        portal_status["run_health"] = run_health
+    portal_status["as_of"] = status.get("as_of")
+    (DATA_DIR / "portal_status.json").write_text(
+        json.dumps(portal_status, indent=2), encoding="utf-8")
 
     (DATA_DIR / "case_studies.json").write_text(
         json.dumps(case_studies, indent=2), encoding="utf-8")
