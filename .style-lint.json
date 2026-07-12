@@ -6,6 +6,8 @@
   "strict": [
     "index.html",
     "how-it-works/**",
+    "showcase/**",
+    "human/**",
     "work/**",
     "projects/**",
     "gnomes/**",

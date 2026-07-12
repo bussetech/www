@@ -1,0 +1,145 @@
+---
+layout: page
+title: What the studio builds
+eyebrow: Three archetypes, each with public proof
+description: "The Bussetech Software Studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. Each is proven with a live site or a public repository you can check yourself."
+permalink: /showcase/
+updated: 2026-07-12
+faq:
+  - q: "Can the studio build an information product or an open dataset?"
+    a: "Yes. KDC is a live, source-cited open dataset that one human and a governed gnome workforce founded, populated, and now maintain at kdc.bussetech.com. The same pair of product gnomes now runs two more domains, Menowise and Backpacks, which are live and seeding their datasets."
+  - q: "Can the studio build a SaaS application?"
+    a: "Yes. The studio built a governed multi-tenant financial-transparency SaaS to production quality, through the same brief-to-pull-request pipeline that ships its public work. Client details are confidential, so the public claim names no client, no figures, and no participants."
+  - q: "Can the studio rebuild a legacy system?"
+    a: "Yes. Lemonade Stand is a live, playable clean-room rebuild at lemonade.bussetech.com. GenMURK is a clean-room rebuild of a classic multi-user text world, decomposed into requirements and documented in public at genmurk.bussetech.com; the running world is scheduled for a later cycle. A reusable intake capability surveys a legacy codebase before either begins."
+  - q: "How can I verify these claims?"
+    a: "Every claim on this page links to a live site or a public repository. The flagship dataset's agent pull requests and CI checks are public, the whitepaper carries the architecture and economics, and every figure on the home page derives from studio state at build time."
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "What the Bussetech Software Studio builds",
+  "url": "{{ page.url | absolute_url }}",
+  "description": "Three archetypes of software the Bussetech Software Studio builds, each with public proof: information products, SaaS applications, and clean-room rebuilds of legacy systems.",
+  "isPartOf": { "@type": "WebSite", "name": "Bussetech Software Studio", "url": "{{ '/' | absolute_url }}" }
+}
+</script>
+
+{% include tldr.html text="The studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. Each mode below carries at least one live site or public repository a stranger can open. Nothing here claims more than that evidence shows." %}
+
+{%- assign registry = site.data.studio.registry -%}
+{%- assign studies = site.data.studio.case_studies.studies -%}
+{%- assign kdc_study = studies | where: "repo", "kdc" | first -%}
+
+<p>Ask your own AI assistant how <em>bussetech.com</em> can help your business,
+and this is the page it should read. The three sections answer one question
+each — can the studio build the thing you need, and where is the proof.</p>
+
+## Information products
+
+<p><strong>What it proves:</strong> the studio can found and maintain a live,
+source-cited open dataset, and the product gnomes that build one generalize to
+the next domain without a rewrite.</p>
+
+<p>KDC is the anchor: a live open dataset tracking United States data-center
+projects, founded in a day and sustained by dispatched agent cycles, with every
+run in the cost ledger and every change arriving as a pull request. The same
+pair of information gnomes, with named ancestors on the leaderboard, now runs
+two further domains. <a href="https://menowise.bussetech.com">Menowise</a>
+aggregates menopause-health evidence; <a href="https://backpacks.bussetech.com">Backpacks</a>
+aggregates the technical-carry community. Both are live and seeding their
+datasets; KDC is the fully populated one. Three builds, three domains, one
+shared product.</p>
+
+{%- if kdc_study %}
+<div class="grid grid--2">
+  {% include case-study-card.html study=kdc_study %}
+  <div class="prose">
+    <p class="eyebrow">Follow the evidence</p>
+    <p>The <a href="https://kdc.bussetech.com/case-study/">KDC case study</a>
+    shows the build and its upkeep. The <a href="https://kdc.bussetech.com">live
+    dataset</a> carries its own provenance and a CC BY 4.0 license.</p>
+  </div>
+</div>
+{%- endif %}
+
+## SaaS applications
+
+<p><strong>What it proves:</strong> the studio can build a governed,
+multi-tenant SaaS application to production quality under real client-privacy
+rules.</p>
+
+<!-- CONSENT GATE (EPIC4-12 task 2, ADR-0022 §4): the paragraph below is a
+     scrubbed, client-neutral claim about the EAAP engagement. Its subjects
+     include third parties. Do NOT publish (do not merge) until the sysop
+     confirms consent. If consent is not secured, delete this SaaS section and
+     its FAQ item before merge. It already names no client, no participants,
+     no figures, no other-client, and no customer data. -->
+<p>The studio's SaaS flagship is a governed multi-tenant financial-transparency
+application, built to production quality through the same brief-to-pull-request
+pipeline that ships its public work. It is client engagement, so the details
+are confidential: this page names no client, no participants, no financial
+figures, and no other engagement. What it demonstrates is the capability and
+the discipline — a real multi-tenant application, carried through the studio's
+governance and privacy controls end to end.</p>
+
+<p>The public record of how the studio approaches this work lives on the
+<a href="/work/">case-study rail</a>, where the engagement is tracked at the
+honesty level its evidence supports.</p>
+
+## Clean-room rebuilds
+
+<p><strong>What it proves:</strong> the studio can take a legacy system,
+decompose its behavior into requirements, and rebuild it cleanly on modern
+architecture with provenance that never touches the original source.</p>
+
+<p><a href="https://lemonade.bussetech.com">Lemonade Stand</a> is the most
+demonstrable of these: a live, playable clean-room rebuild of the classic
+business simulation, run by its own gnome shift. Open it and play.</p>
+
+<p><a href="https://genmurk.bussetech.com">GenMURK</a> is a clean-room rebuild
+of a classic multi-user text world. Its living-documentation site works in
+public: the decomposition, the requirements, the architecture decisions, and
+the provenance are all readable as the rebuild proceeds. The heritage systems
+that inform it are shown as lineage, not as the product; the running world
+itself is scheduled for a later cycle, so this page claims the plan and the
+public build log, not a live game. Behind both sits a reusable intake
+capability that surveys a legacy codebase (its languages, its licenses, its
+shape) before any rebuild begins, proven on the same text-world survey.</p>
+
+<p>A third rebuild, Robot Odyssey, is named here as a deliberately gated
+capstone: it waits behind a rights question and nothing has been built. Three
+rebuilds, approached three ways, is the point of the slate.</p>
+
+## The figures behind the work
+
+<p>The public figures below derive from studio state at build time, never from
+copy. They report volume and reach rather than operational pass-or-fail: health
+signals that can turn red live behind the client portal, for an audience
+onboarded on their nuance.</p>
+
+{%- assign studio_status = site.data.studio.status -%}
+{%- if studio_status.tiles and studio_status.tiles.size > 0 %}
+<section aria-label="Live studio figures">
+  <div class="grid grid--3">
+    {%- for t in studio_status.tiles -%}
+    {% include stat-tile.html value=t.value label=t.label detail=t.detail href=t.href link_label=t.link_label %}
+    {%- endfor -%}
+  </div>
+</section>
+{%- else %}
+<p>Live figures render on the <a href="/">home page</a> when studio state is
+fetched at build.</p>
+{%- endif %}
+
+{% include faq.html items=page.faq %}
+
+<!-- Upkeep: this showcase is curated marketing narrative (EPIC4-12). Project
+     links point at live public sites, verified before shipping. The canonical
+     project and gnome enumerations stay at /projects/ and /gnomes/. Claim
+     ceilings: Menowise/Backpacks are live and seeding (not yet populated to
+     KDC's depth); GenMURK is a public build log and plan, not a live world;
+     Robot Odyssey is gated with nothing built; the SaaS tile is consent-gated
+     (ADR-0022 §4). Revisit claim language as each project's state advances. -->
