@@ -1,15 +1,13 @@
 ---
 layout: page
 title: What the studio builds
-eyebrow: Three archetypes, each with public proof
-description: "The Bussetech Software Studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. Each is proven with a live site or a public repository you can check yourself."
+eyebrow: Three archetypes, proof you can check
+description: "The Bussetech Software Studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. Information products and rebuilds are proven with live sites and public repositories you can check yourself; the SaaS mode is client work whose receipt publishes on consent."
 permalink: /showcase/
 updated: 2026-07-12
 faq:
   - q: "Can the studio build an information product or an open dataset?"
     a: "Yes. KDC is a live, source-cited open dataset that one human and a governed gnome workforce founded, populated, and now maintain at kdc.bussetech.com. The same pair of product gnomes now runs two more domains, Menowise and Backpacks, which are live and seeding their datasets."
-  - q: "Can the studio build a SaaS application?"
-    a: "Yes. The studio built a governed multi-tenant financial-transparency SaaS to production quality, through the same brief-to-pull-request pipeline that ships its public work. Client details are confidential, so the public claim names no client, no figures, and no participants."
   - q: "Can the studio rebuild a legacy system?"
     a: "Yes. Lemonade Stand is a live, playable clean-room rebuild at lemonade.bussetech.com. GenMURK is a clean-room rebuild of a classic multi-user text world, decomposed into requirements and documented in public at genmurk.bussetech.com; the running world is scheduled for a later cycle. A reusable intake capability surveys a legacy codebase before either begins."
   - q: "How can I verify these claims?"
@@ -22,12 +20,12 @@ faq:
   "@type": "CollectionPage",
   "name": "What the Bussetech Software Studio builds",
   "url": "{{ page.url | absolute_url }}",
-  "description": "Three archetypes of software the Bussetech Software Studio builds, each with public proof: information products, SaaS applications, and clean-room rebuilds of legacy systems.",
+  "description": "Three archetypes of software the Bussetech Software Studio builds: information products and clean-room rebuilds with public proof, and consent-gated client SaaS work.",
   "isPartOf": { "@type": "WebSite", "name": "Bussetech Software Studio", "url": "{{ '/' | absolute_url }}" }
 }
 </script>
 
-{% include tldr.html text="The studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. Each mode below carries at least one live site or public repository a stranger can open. Nothing here claims more than that evidence shows." %}
+{% include tldr.html text="The studio builds in three modes: information products, SaaS applications, and clean-room rebuilds of legacy systems. The information and rebuild modes below each carry live sites and public repositories a stranger can open; the SaaS mode is client work whose proof publishes on consent. Nothing here claims more than that evidence shows." %}
 
 {%- assign registry = site.data.studio.registry -%}
 {%- assign studies = site.data.studio.case_studies.studies -%}
@@ -49,7 +47,7 @@ run in the cost ledger and every change arriving as a pull request. The same
 pair of information gnomes, with named ancestors on the leaderboard, now runs
 two further domains. <a href="https://menowise.bussetech.com">Menowise</a>
 aggregates menopause-health evidence; <a href="https://backpacks.bussetech.com">Backpacks</a>
-aggregates the technical-carry community. Both are live and seeding their
+aggregates technical-carry maker specifications. Both are live and seeding their
 datasets; KDC is the fully populated one. Three builds, three domains, one
 shared product.</p>
 
@@ -67,27 +65,15 @@ shared product.</p>
 
 ## SaaS applications
 
-<p><strong>What it proves:</strong> the studio can build a governed,
-multi-tenant SaaS application to production quality under real client-privacy
-rules.</p>
+<p>The studio's SaaS work is client engagement carried under its privacy
+controls (ADR-0022-class: no client, no participants, no figures appear in
+public). Its proof tile publishes here the moment the client consent gate
+clears — until then, this page makes no claim about it.</p>
 
-<!-- CONSENT GATE (EPIC4-12 task 2, ADR-0022 §4): the paragraph below is a
-     scrubbed, client-neutral claim about the EAAP engagement. Its subjects
-     include third parties. Do NOT publish (do not merge) until the sysop
-     confirms consent. If consent is not secured, delete this SaaS section and
-     its FAQ item before merge. It already names no client, no participants,
-     no figures, no other-client, and no customer data. -->
-<p>The studio's SaaS flagship is a governed multi-tenant financial-transparency
-application, built to production quality through the same brief-to-pull-request
-pipeline that ships its public work. It is client engagement, so the details
-are confidential: this page names no client, no participants, no financial
-figures, and no other engagement. What it demonstrates is the capability and
-the discipline — a real multi-tenant application, carried through the studio's
-governance and privacy controls end to end.</p>
-
-<p>The public record of how the studio approaches this work lives on the
-<a href="/work/">case-study rail</a>, where the engagement is tracked at the
-honesty level its evidence supports.</p>
+<!-- CONSENT GATE (ADR-0022 §4, platform#304): the scrubbed EAAP tile was
+     held out at merge (PRECLOSE1-01, 2026-07-12) because consent was not yet
+     confirmed. It restores in one edit from this file's git history
+     (branch epic4-12-bio-showcase) once #304 closes confirmed. -->
 
 ## Clean-room rebuilds
 
@@ -141,5 +127,5 @@ fetched at build.</p>
      project and gnome enumerations stay at /projects/ and /gnomes/. Claim
      ceilings: Menowise/Backpacks are live and seeding (not yet populated to
      KDC's depth); GenMURK is a public build log and plan, not a live world;
-     Robot Odyssey is gated with nothing built; the SaaS tile is consent-gated
-     (ADR-0022 §4). Revisit claim language as each project's state advances. -->
+     Robot Odyssey is gated with nothing built; the SaaS tile was HELD OUT at merge pending consent (platform#304) —
+     restore from git history when it closes confirmed (ADR-0022 §4). Revisit claim language as each project's state advances. -->
