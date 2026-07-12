@@ -52,9 +52,9 @@ two things separate and legible.
 
 - Capital One's first developer evangelist.
 - A 10,000-developer GitHub Enterprise business case.
-- DevExchange, presented at SXSW.
+- DevExchange, launched at SXSW 2016.
 - Co-founder of Terazo (2016); grew it into Twilio's largest
-  systems-integrator partner; sold it in November 2024, relationships intact.
+  systems-integrator partner; sold it in November 2024.
 
 ## Why voice matters here
 
