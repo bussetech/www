@@ -17,6 +17,12 @@ linked pages, not this summary.
 
 - [How it works](/how-it-works/): the machinery, walked — gnome runs, receipts,
   the guidance loop, cycles — with links to public receipts, plus a Q&A.
+- [Showcase](/showcase/): what the studio builds, across three archetypes
+  (information products, SaaS applications, and clean-room rebuilds of legacy
+  systems), each with a live site or public repository, and a Q&A that answers
+  "can the studio build X?" with evidence.
+- [The human](/human/): the studio's one human operator, Chris Busse, named
+  and credentialed — the accountable person behind the gnome workforce.
 - [Whitepaper — Repo-Native Agent Operations](/whitepaper/): the studio's
   architecture and operating evidence (versioned; canonical serves latest,
   prior releases archived at /whitepaper/vX.Y.Z/).

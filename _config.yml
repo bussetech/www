@@ -71,12 +71,16 @@ studio:
       url: /
     - title: How it works
       url: /how-it-works/
+    - title: Showcase
+      url: /showcase/
     - title: Work
       url: /work/
     - title: Projects
       url: /projects/
     - title: Gnomes
       url: /gnomes/
+    - title: The human
+      url: /human/
     - title: Whitepaper
       url: /whitepaper/
 

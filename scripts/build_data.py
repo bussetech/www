@@ -645,8 +645,6 @@ def fallback_tiles() -> list[dict]:
          "detail": "no studio state fetched", "href": None, "link_label": None},
         {"value": "$0.00", "label": "spend (offline build fixture)",
          "detail": "no studio state fetched", "href": None, "link_label": None},
-        {"value": "fixture", "label": "chain test (offline build fixture)",
-         "detail": "no studio state fetched", "href": None, "link_label": None},
     ]
 
 
