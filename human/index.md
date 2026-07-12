@@ -58,8 +58,8 @@ two things separate and legible.
 
 ## Why voice matters here
 
-The Terazo years were built on Twilio. Those relationships are intact, and
-they are why the studio treats Twilio-integrated voice as a first-class
+The Terazo years were built on Twilio's platform, so the studio brings deep
+hands-on experience to Twilio-integrated voice and treats it as a first-class
 capability rather than a side experiment. Voice enters the studio narrowly and
 under the same rules as every other input: a transcript is untrusted data, it
 rides through the trust-tier framework, and a human stays in the loop. The
