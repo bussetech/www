@@ -146,6 +146,10 @@ def normalize_registry(platform: dict, source: str) -> dict:
             "name": r["name"],
             "description": r.get("description", ""),
             "archetype": r.get("archetype"),
+            # Opt-in /showcase/ signal (section + curated one-line claim); only
+            # featured projects carry it. The enumeration and live status still
+            # derive from studio state — this just says which section, if any.
+            "showcase": r.get("showcase"),
             "lifecycle": lifecycle,
             # status/status_label feed the theme's chip directly: green only
             # for live repos, amber otherwise — red is reserved for breakage.
@@ -661,7 +665,12 @@ def fallback_state() -> tuple[dict, dict]:
         "repos": [{
             "name": "sample-project",
             "description": "Offline build fixture — stands in for real projects when studio state is unreachable.",
-            "archetype": None,
+            "archetype": "info",
+            # Exercises the /showcase/ render path in offline builds.
+            "showcase": {
+                "section": "info",
+                "claim": "Offline build fixture — stands in for a showcased project when studio state is unreachable.",
+            },
             "lifecycle": "planned",
             "status": "warn",
             "status_label": "fixture",

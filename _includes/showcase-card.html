@@ -1,0 +1,20 @@
+{%- comment -%}
+  Showcase card. Param: a `project` registry entry that carries a `showcase`
+  block ({title?, section, claim}). Title, claim, live-site link and status
+  all render from studio state — nothing project-specific is hardcoded on the
+  /showcase/ page, so new or changed projects appear on the next build.
+  Site link honours the ADR-0006 leak rule: it only ever points at site_url
+  (a published site), never a repo.
+{%- endcomment -%}
+{%- assign p = include.project -%}
+<article class="card">
+  <h3 class="card__title">
+    {%- if p.site_url -%}<a href="{{ p.site_url }}">{{ p.showcase.title | default: p.name }}</a>
+    {%- else -%}{{ p.showcase.title | default: p.name }}{%- endif -%}
+  </h3>
+  {%- if p.showcase.claim %}<p class="card__desc">{{ p.showcase.claim }}</p>{% endif -%}
+  <div class="card__meta">
+    {%- if p.status -%}{% include status-chip.html status=p.status label=p.status_label %}{%- endif -%}
+    {%- if p.site_url -%}<a href="{{ p.site_url }}">Visit site</a>{%- endif -%}
+  </div>
+</article>
