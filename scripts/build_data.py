@@ -138,7 +138,7 @@ def normalize_registry(platform: dict, source: str) -> dict:
         # the portal data at all — no card, no detail stub, no feed fetch,
         # no name/description in any emitted JSON — REGARDLESS of `listed`
         # (the schema forces listed: false; this is the defensive layer the
-        # ADR requires, with EAAP's founding as its deadline).
+        # ADR requires, with the first client founding as its deadline).
         if bool(r.get("client", False)):
             continue
         listed = bool(r.get("listed", False))
