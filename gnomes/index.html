@@ -38,6 +38,8 @@ full_width: true
   <p>Each portrait is the gnome at the craft-ladder stage it has earned in the ledger — a novice's tool is plain and held with care; a meister's is a masterwork.</p>
 </div>
 
+{% include gnome-leaderboard.html %}
+
 {%- for k in knolls -%}
 {%- assign members = gnomes | where: "knoll", k.name -%}
 {%- if members.size > 0 -%}
@@ -83,8 +85,6 @@ full_width: true
   </div>
 </section>
 {%- endif -%}
-
-{% include gnome-leaderboard.html %}
 
 <div class="gnomes-measure gnomes-signup">
   {% include signup.html placement="www-gnomes" %}
