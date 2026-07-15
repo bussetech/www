@@ -1,0 +1,68 @@
+{%- comment -%}
+  Gnome profile card (portal-scoped, www#gnome-portraits). A "team page"
+  treatment of the theme's gnome-card: same information, plus the gnome's
+  generated portrait for its earned craft-ladder stage.
+
+  Portraits are vendored under assets/gnomes/<var>/illus1..5.png (one per
+  stage: novice=1 … meister=5; platform igotchi/illustrations.md §2). A gnome
+  is drawn with a portrait only when it appears in _data/gnome_portraits.yml;
+  otherwise it falls back to the igotchi text glyph, so the card never breaks
+  on a not-yet-generated cast member.
+
+  Per platform illustrations.md §3 the signature accent lives ONLY in the
+  image plane — it never colours card chrome here. The portrait supplies all
+  colour; the card stays neutral theme ink/gray, like the igotchi ruling.
+
+  Param: `gnome` — a gnomes.json entry (var, display_name, level, status,
+  status_label, home, deployments, url, purpose, igotchi, retired, ancestor_of).
+{%- endcomment -%}
+{%- assign g = include.gnome -%}
+{%- assign stage = g.igotchi.stage | default: 'novice' -%}
+{%- assign stage_ladder = 'novice,apprentice,journeyman,craftsman,meister' | split: ',' -%}
+{%- assign illus = 1 -%}
+{%- for s in stage_ladder -%}{%- if s == stage -%}{%- assign illus = forloop.index -%}{%- endif -%}{%- endfor -%}
+{%- assign has_portrait = false -%}
+{%- if site.data.gnome_portraits.gnomes contains g.var -%}{%- assign has_portrait = true -%}{%- endif -%}
+<article class="profile-card{% if g.retired %} profile-card--retired{% endif %}">
+  <div class="profile-card__media">
+    {%- if has_portrait -%}
+    <img class="profile-card__portrait"
+         src="{{ '/assets/gnomes/' | append: g.var | append: '/illus' | append: illus | append: '.png' | relative_url }}"
+         width="512" height="512" loading="lazy" decoding="async"
+         alt="Line-art portrait of {{ g.display_name }} at the {{ stage }} stage" />
+    {%- else -%}
+    <span class="profile-card__glyph" aria-hidden="true">{{ g.igotchi.glyph | default: '○' }}</span>
+    {%- endif -%}
+    {%- if g.igotchi.stage -%}<span class="profile-card__stage" title="Craft-ladder stage (from run history)">{{ g.igotchi.stage }}</span>{%- endif -%}
+  </div>
+  <div class="profile-card__body">
+    <h3 class="profile-card__name">
+      {%- if g.url -%}<a href="{{ g.url }}">{{ g.display_name }}</a>{%- else -%}{{ g.display_name }}{%- endif -%}
+    </h3>
+    <p class="profile-card__var">{{ g.var }}</p>
+
+    {%- if g.igotchi -%}
+    <p class="profile-card__score">
+      {%- if g.igotchi.score_display -%}<strong>{{ g.igotchi.score_display }}</strong> lifetime tokens{%- else -%}No live runs yet{%- endif -%}
+    </p>
+    {%- if g.igotchi.traits and g.igotchi.traits.size > 0 -%}
+    <ul class="profile-card__traits">
+      {%- for t in g.igotchi.traits %}<li class="profile-card__trait">{{ t }}</li>{% endfor -%}
+    </ul>
+    {%- endif -%}
+    {%- if g.igotchi.bio %}<p class="profile-card__bio">{{ g.igotchi.bio }}</p>{% endif -%}
+    {%- endif -%}
+
+    {%- if g.purpose %}<p class="profile-card__purpose">{{ g.purpose }}</p>{% endif -%}
+
+    <dl class="profile-card__meta">
+      <div><dt class="visually-hidden">Level</dt><dd class="profile-card__level">{{ g.level }}</dd></div>
+      {%- if g.status -%}
+      <div><dt class="visually-hidden">Status</dt><dd>{% include status-chip.html status=g.status label=g.status_label %}</dd></div>
+      {%- endif -%}
+      {%- if g.home -%}<div><dt>Home</dt><dd>{{ g.home }}</dd></div>{%- endif -%}
+      {%- if g.deployments and g.deployments.size > 0 -%}<div><dt>Works in</dt><dd>{{ g.deployments | join: ", " }}</dd></div>{%- endif -%}
+      {%- if g.ancestor_of -%}<div><dt>Ancestor of</dt><dd>{{ g.ancestor_of }}</dd></div>{%- endif -%}
+    </dl>
+  </div>
+</article>

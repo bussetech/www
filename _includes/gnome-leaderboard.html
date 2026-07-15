@@ -1,0 +1,60 @@
+{%- comment -%}
+  Gnome leaderboard — rendered inline in the /gnomes/ page body (no longer a
+  separate scrolling rail; www#gnome-portraits). Rows come from
+  _data/studio/leaderboard.json (built from platform igotchi.json on the
+  ledger branch, ADR-0036 display plane). Default sort: lifetime tokens desc.
+
+  Hand-built (not the generic sortable-table include) so each row can carry
+  the gnome's stage portrait, while honouring the theme's sortable-table
+  contract — table[data-sortable], th[data-key][data-numeric] with a
+  .sortable-table__sort button, td[data-value], aria-sort on the pre-sorted
+  column — so assets/js/sortable-table.js enhances it unchanged. Needs
+  `sortable_tables: true` in the page front matter.
+
+  Offline/fixture builds carry no leaderboard and this renders nothing.
+{%- endcomment -%}
+{%- assign lb = site.data.studio.leaderboard -%}
+{%- if lb and lb.size > 0 -%}
+{%- assign rows = lb | sort: 'tokens_sort' | reverse -%}
+{%- assign stage_names = 'novice,apprentice,journeyman,craftsman,meister' | split: ',' -%}
+<section class="stack leaderboard" aria-label="Gnome leaderboard">
+  <h2>Leaderboard</h2>
+  <p class="card__desc">Lifetime tokens from the run ledger — the igotchi score, and the stage each gnome has earned. Click a column to re-sort.</p>
+  <div class="sortable-table__wrap">
+    <table class="sortable-table leaderboard__table" data-sortable>
+      <caption class="visually-hidden">Gnome leaderboard: portrait, stage, lifetime tokens, and runs per gnome, sorted by tokens.</caption>
+      <thead>
+        <tr>
+          <th scope="col" data-key="gnome"><button type="button" class="sortable-table__sort">Gnome</button></th>
+          <th scope="col" data-key="stage" data-numeric title="Craft-ladder stage" aria-sort="descending"><button type="button" class="sortable-table__sort">Stage</button></th>
+          <th scope="col" class="is-numeric" data-key="tokens" data-numeric aria-sort="descending"><button type="button" class="sortable-table__sort">Tokens</button></th>
+          <th scope="col" class="is-numeric" data-key="runs" data-numeric><button type="button" class="sortable-table__sort">Runs</button></th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for r in rows -%}
+        {%- assign illus = r.stage_sort | plus: 1 -%}
+        {%- assign has_portrait = false -%}
+        {%- if site.data.gnome_portraits.gnomes contains r.gnome_sort -%}{%- assign has_portrait = true -%}{%- endif -%}
+        <tr>
+          <td data-value="{{ r.gnome_sort }}">
+            <span class="leaderboard__cell">
+              {%- if has_portrait -%}
+              <span class="leaderboard__avatar"><img src="{{ '/assets/gnomes/' | append: r.gnome_sort | append: '/illus' | append: illus | append: '.png' | relative_url }}"
+                   width="512" height="512" loading="lazy" decoding="async" alt="" /></span>
+              {%- else -%}
+              <span class="leaderboard__avatar leaderboard__avatar--glyph" aria-hidden="true">{{ r.stage }}</span>
+              {%- endif -%}
+              <span class="leaderboard__name">{{ r.gnome }}</span>
+            </span>
+          </td>
+          <td data-numeric data-value="{{ r.stage_sort }}"><span class="leaderboard__glyph" aria-hidden="true">{{ r.stage }}</span>{%- if r.stage_sort >= 0 %} <span class="leaderboard__stage-name">{{ stage_names[r.stage_sort] }}</span>{% endif -%}</td>
+          <td class="is-numeric" data-value="{{ r.tokens_sort }}">{{ r.tokens }}</td>
+          <td class="is-numeric" data-value="{{ r.runs }}">{{ r.runs }}</td>
+        </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+</section>
+{%- endif -%}
