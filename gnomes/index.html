@@ -1,76 +1,226 @@
 ---
-layout: page
+layout: default
 title: Gnomes
 eyebrow: Directory
 description: The studio is where the gnomes work — every agent in the registry, platform and project, grouped by knoll.
 permalink: /gnomes/
-rail: gnome-leaderboard-rail.html
-rail_label: Gnome leaderboard
 sortable_tables: true
+full_width: true
 ---
+{%- comment -%}
+  The Gnomes directory renders as a team page: a portrait card per gnome
+  (theme gnome-card information plus the generated stage portrait, via the
+  www-local include gnome-profile-card.html) and the leaderboard inline in
+  the same column — one page, one scroll (no separate sticky rail). Uses
+  layout: default (not page) so the card grid and leaderboard get the full
+  container width instead of the prose reading measure.
+
+  Gnome-igotchi (EPIC3-09, platform ADR-0036) is the display-only personality
+  overlay, derived from real run history behind the CI-enforced firewall and
+  merged onto each gnome by scripts/build_data.py. Portraits are the same
+  display plane (platform igotchi/illustrations.md): the accent lives only in
+  the image, never in card chrome.
+{%- endcomment -%}
 {%- assign gnomes = site.data.studio.gnomes.gnomes -%}
 {%- assign knolls = site.data.studio.gnomes.knolls -%}
 
-{%- if gnomes and gnomes.size > 0 -%}
-<p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. Gnomes work in <strong>knolls</strong> — teams with a shared purpose and a shared knowledge base that every member carries into its runs. All of them live in the same registry, honor the same contract, and leave the same receipts.</p>
+{% include breadcrumb.html %}
+<header class="page-header gnomes-measure">
+  {%- if page.eyebrow %}<p class="eyebrow">{{ page.eyebrow }}</p>{% endif -%}
+  <h1 class="page-header__title">{{ page.title }}</h1>
+  {%- if page.description %}<p class="page-header__desc">{{ page.description }}</p>{% endif -%}
+</header>
 
-{%- comment -%}
-  Gnome-igotchi (EPIC3-09, platform ADR-0036): the display-only personality
-  overlay — derived from real run history, behind the CI-enforced firewall
-  (personality artifacts are never loadable by the harness) — rides in on
-  each gnome's `igotchi` block (merged by scripts/build_data.py from
-  igotchi.json on the platform ledger branch) and renders inside the
-  theme's gnome-card. Every trait is traceable: rule + evidence live in
-  _data/studio/igotchi.json.
-{%- endcomment -%}
+{%- if gnomes and gnomes.size > 0 -%}
+<div class="gnomes-measure">
+  <p>A gnome is a single agent that handles one task end to end. <strong>Platform gnomes</strong> serve the studio itself; <strong>project gnomes</strong> serve one or more projects. Gnomes work in <strong>knolls</strong> — teams with a shared purpose and a shared knowledge base that every member carries into its runs.</p>
+
+  <p>Each portrait is the gnome at the craft-ladder stage it has earned in the ledger — a novice's tool is plain and held with care; a meister's is a masterwork.</p>
+</div>
+
 {%- for k in knolls -%}
 {%- assign members = gnomes | where: "knoll", k.name -%}
 {%- if members.size > 0 -%}
-<section aria-label="Knoll: {{ k.name }}">
-  <h2>The {{ k.name }} knoll</h2>
+<section class="gnomes-section" aria-label="Knoll: {{ k.name }}">
+  <h2 class="gnomes-section__title">The {{ k.name }} knoll</h2>
   {%- if k.purpose and k.purpose != "" -%}
-  <p>{{ k.purpose }}</p>
+  <p class="gnomes-section__lede gnomes-measure">{{ k.purpose }}</p>
   {%- endif -%}
-  <div class="grid grid--3">
+  <div class="gnomes-grid">
     {%- for g in members -%}
-    {% include gnome-card.html gnome=g %}
+    {% include gnome-profile-card.html gnome=g %}
     {%- endfor -%}
   </div>
 </section>
 {%- endif -%}
 {%- endfor -%}
 
-{%- comment -%}
-  Retired gnomes (platform ADR-0045) have left their knoll and would fall
-  into "Unaffiliated"; they get their own section instead — they are
-  ancestors, not drifters. Cards keep the earned stage, frozen score, and
-  the "ancestor of" line; the work they did is still in the ledger.
-{%- endcomment -%}
+{%- comment -%} Unaffiliated: serve the studio directly, outside any knoll. {%- endcomment -%}
 {%- assign unaffiliated = gnomes | where_exp: "g", "g.knoll == nil and g.retired != true" -%}
 {%- if unaffiliated.size > 0 -%}
-<section aria-label="Unaffiliated gnomes">
-  <h2>Unaffiliated</h2>
-  <p>Gnomes that serve the studio directly, outside any knoll.</p>
-  <div class="grid grid--3">
+<section class="gnomes-section" aria-label="Unaffiliated gnomes">
+  <h2 class="gnomes-section__title">Unaffiliated</h2>
+  <p class="gnomes-section__lede gnomes-measure">Gnomes that serve the studio directly, outside any knoll.</p>
+  <div class="gnomes-grid">
     {%- for g in unaffiliated -%}
-    {% include gnome-card.html gnome=g %}
+    {% include gnome-profile-card.html gnome=g %}
     {%- endfor -%}
   </div>
 </section>
 {%- endif -%}
 
+{%- comment -%} Ancestors: retired gnomes (platform ADR-0045) — dormant, with
+    the stage they earned and the score frozen where their last run left it. {%- endcomment -%}
 {%- assign ancestors = gnomes | where: "retired", true -%}
 {%- if ancestors.size > 0 -%}
-<section aria-label="Ancestors (retired gnomes)">
-  <h2>Ancestors</h2>
-  <p>Retired gnomes stay in the codebase and on this board — dormant, with the stage they earned and the score frozen where their last run left it. Each card names the gnome that carries its duty now.</p>
-  <div class="grid grid--3">
+<section class="gnomes-section" aria-label="Ancestors (retired gnomes)">
+  <h2 class="gnomes-section__title">Ancestors</h2>
+  <p class="gnomes-section__lede gnomes-measure">Retired gnomes stay in the codebase and on this board — dormant, with the stage they earned and the score frozen where their last run left it. Each card names the gnome that carries its duty now.</p>
+  <div class="gnomes-grid">
     {%- for g in ancestors -%}
-    {% include gnome-card.html gnome=g %}
+    {% include gnome-profile-card.html gnome=g %}
     {%- endfor -%}
   </div>
 </section>
 {%- endif -%}
+
+{% include gnome-leaderboard.html %}
+
+<div class="gnomes-measure gnomes-signup">
+  {% include signup.html placement="www-gnomes" %}
+</div>
 {%- else -%}
-<p>The gnome registry is empty or unavailable. Gnomes register in the studio's <code>gnomes.yml</code> and appear here on the next build.</p>
+<div class="gnomes-measure">
+  <p>The gnome registry is empty or unavailable. Gnomes register in the studio's <code>gnomes.yml</code> and appear here on the next build.</p>
+</div>
 {%- endif -%}
+
+<style>
+  /* Gnomes directory — page-level layout glue (www CLAUDE.md). Colour and
+     type come from theme tokens; no signature-accent colour touches chrome
+     (platform illustrations.md §3). The portrait plate stays light in both
+     themes because the raster portraits carry a baked-in white background. */
+  .gnomes-measure { max-width: var(--layout-measure); }
+  .gnomes-intro { margin-bottom: var(--space-6); }
+
+  .gnomes-section { margin-block: var(--space-7); }
+  .gnomes-section__title { margin-bottom: var(--space-2); }
+  .gnomes-section__lede { color: var(--color-ink-soft); margin-top: 0; margin-bottom: var(--space-5); }
+
+  .gnomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--space-5);
+  }
+
+  /* ── Profile card ──────────────────────────────────────────────────── */
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    border: var(--border-hairline) solid var(--gray-300);
+    border-radius: var(--radius-md);
+    background: var(--color-ground);
+    overflow: hidden;
+  }
+  .profile-card__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    /* fixed light mat: portraits ship a flat white background, so the plate
+       stays light in dark mode too rather than boxing a white square in ink */
+    background: #ffffff;
+    border-bottom: var(--border-hairline) solid var(--gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .profile-card__portrait {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .profile-card__glyph {
+    font-size: var(--type-scale-4xl);
+    line-height: 1;
+    color: var(--gray-900);
+  }
+  .profile-card__stage {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-3);
+    background: var(--color-ink);
+    color: var(--color-ground);
+    font-size: var(--type-scale-xs);
+    text-transform: capitalize;
+    letter-spacing: var(--type-tracking-wide);
+    padding: 0.1rem var(--space-2);
+    border-radius: var(--radius-pill);
+  }
+  .profile-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    flex: 1;
+  }
+  .profile-card__name { font-size: var(--type-scale-md); margin: 0; }
+  .profile-card__name a { color: var(--color-ink); text-decoration: none; }
+  .profile-card__name a:hover { color: var(--color-action-base); text-decoration: underline; }
+  .profile-card__var {
+    font-family: var(--type-family-mono);
+    font-size: var(--type-scale-sm);
+    color: var(--color-info-base);
+    margin: 0;
+  }
+  .profile-card__score { font-size: var(--type-scale-sm); color: var(--color-ink-soft); margin: 0; }
+  .profile-card__score strong { color: var(--color-ink); }
+  .profile-card__traits {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-1);
+  }
+  .profile-card__trait {
+    font-size: var(--type-scale-xs);
+    color: var(--color-ink-soft);
+    border: var(--border-hairline) solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-2);
+  }
+  .profile-card__bio { font-size: var(--type-scale-xs); color: var(--color-ink-soft); font-style: italic; margin: 0; }
+  .profile-card__purpose { font-size: var(--type-scale-sm); color: var(--color-ink-soft); margin: 0; }
+  .profile-card__meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+    align-items: center; margin: var(--space-1) 0 0;
+    font-size: var(--type-scale-xs); color: var(--color-ink-soft);
+  }
+  .profile-card__meta > div { display: flex; gap: var(--space-1); align-items: baseline; }
+  .profile-card__meta dt { font-weight: var(--type-weight-bold); text-transform: uppercase; letter-spacing: var(--type-tracking-wide); }
+  .profile-card__meta dd { margin: 0; }
+  .profile-card__level { text-transform: uppercase; letter-spacing: var(--type-tracking-wide); font-weight: var(--type-weight-bold); }
+  .profile-card--retired { opacity: 0.85; }
+  .profile-card--retired .profile-card__media { filter: grayscale(1); }
+
+  /* ── Leaderboard (inline, portraits) ──────────────────────────────── */
+  .leaderboard { margin-block: var(--space-7); }
+  .leaderboard__cell { display: inline-flex; align-items: center; gap: var(--space-3); }
+  .leaderboard__avatar {
+    width: 2.75rem; height: 2.75rem;
+    border-radius: var(--radius-pill);
+    background: #ffffff;
+    border: var(--border-hairline) solid var(--gray-300);
+    flex: none;
+    overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  /* portraits carry generous margins (avatar-safe composition); zoom slightly
+     so the figure reads at roster size instead of floating in white */
+  .leaderboard__avatar img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.28); }
+  .leaderboard__avatar--glyph {
+    font-size: var(--type-scale-md); color: var(--gray-900);
+  }
+  .leaderboard__name { font-weight: var(--type-weight-bold); }
+  .leaderboard__glyph { font-size: var(--type-scale-md); margin-right: var(--space-1); }
+  .leaderboard__stage-name { text-transform: capitalize; color: var(--color-ink-soft); font-size: var(--type-scale-sm); }
+  .leaderboard__table td { vertical-align: middle; }
+
+  .gnomes-signup { margin-top: var(--space-7); }
+</style>
