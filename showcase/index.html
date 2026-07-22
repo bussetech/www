@@ -40,6 +40,7 @@ faq:
 {%- assign showcased = registry.repos | where_exp: "p", "p.showcase" -%}
 {%- assign info_products = showcased | where_exp: "p", "p.showcase.section == 'info'" -%}
 {%- assign rebuilds = showcased | where_exp: "p", "p.showcase.section == 'rebuild'" -%}
+{%- assign saas_apps = showcased | where_exp: "p", "p.showcase.section == 'saas'" -%}
 
 <p>Ask your own AI assistant how <em>bussetech.com</em> can help your business,
 and this is the page it should read. The three sections answer one question
@@ -87,6 +88,21 @@ governance and privacy controls end to end.</p>
 <p>The public record of how the studio approaches this work lives on the
 <a href="/work/">case-study rail</a>, where the engagement is tracked at the
 honesty level its evidence supports.</p>
+
+{%- comment -%}
+  Public (non-client) SaaS builds render from the registry like the other
+  sections — showcase.section 'saas' (ADR-0052 amendment, CRMDEMO-EPIC1-01;
+  first entry: crm-demo). The confidential client paragraph above stays
+  curated prose by necessity (ADR-0022). No else-branch: until a public
+  saas entry exists, the client paragraph carries the section.
+{%- endcomment -%}
+{%- if saas_apps.size > 0 %}
+<div class="grid grid--3">
+  {%- for p in saas_apps -%}
+  {% include showcase-card.html project=p %}
+  {%- endfor -%}
+</div>
+{%- endif %}
 
 <h2>Clean-room rebuilds</h2>
 
@@ -158,4 +174,6 @@ enumerated in full:</p>
      project and gnome enumerations stay at /projects/ and /gnomes/. Claim
      ceilings: Menowise/Backpacks are live and seeding (not yet populated to
      KDC's depth); GenMURK is a public build log and plan, not a live world;
-     Robot Odyssey is gated with nothing built; the SaaS tile is consent-confirmed (platform#304, 2026-07-12; ADR-0022 §4). Revisit claim language as each project's state advances. -->
+     Robot Odyssey is gated with nothing built; the SaaS tile is consent-confirmed (platform#304, 2026-07-12; ADR-0022 §4); crm-demo is in build
+     and its claim ships neutral (no live-site language) until go-live flips
+     the registry to active. Revisit claim language as each project's state advances. -->

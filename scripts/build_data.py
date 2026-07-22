@@ -174,6 +174,11 @@ def normalize_registry(platform: dict, source: str) -> dict:
         # it — the portal's archive section shows the record, not a dead URL.
         if lifecycle == "archived":
             entry["site_url"] = None
+        # Planned projects (CRMDEMO-EPIC1-01): the site does not exist YET —
+        # same rule, honest in the other direction. The subdomain is a
+        # declared destination, not a live URL, until status flips active.
+        if lifecycle == "planned":
+            entry["site_url"] = None
         repos.append(entry)
     return {
         "source": source,
