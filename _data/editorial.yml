@@ -10,7 +10,7 @@
 #   week_note       "this week in the studio" — a few plain sentences, no hype
 #   updated         ISO date of the last editorial pass
 
-featured: "kdc"
-featured_note: "KDC is the studio's flagship dataset — US data center projects tracked from announcements, permits, and construction as an open, source-cited record. It launched with 33 project-sites across seven states, a filterable status-coloured map with per-record locator pages, and a case study documenting how the dataset is built and kept current — a ledger entry for every run, every change a reviewed pull request. It is now in an unattended-reliability soak, with a re-verdict on how much of it runs without a hand on the wheel booked for 2026-07-19."
-week_note: "Four new projects joined the studio this week: menowise, an evidence-cited menopause and midlife health aggregator with its first entries live; backpacks, an aggregator for technical and boutique carry with 21 packs sourced; Lemonade Stand, a mobile take on the classic business game; and GenMURK, a clean-room multiplayer text world building in public. KDC also shipped a filterable map, its seed dataset of 33 project-sites, and a case study on how it's built and kept current. The studio grew from two live sites to six, each one sourced and reviewed before it ships."
-updated: "2026-07-12"
+featured: "genmurk"
+featured_note: "GenMURK's first build epic closed out this stretch: ten sessions and twenty merged pull requests took a clean-room text-world rebuild from an empty repository to a playable world, with movement, building, real authentication, and player-programmable softcode graded against what actually shipped."
+week_note: "It's been a quiet stretch, with no new posts across the studio's feeds in the last week. Six projects stay live: KDC's data-center dataset and map, menowise's cited menopause and midlife-health entries, backpacks' technical-carry aggregator, Lemonade Stand's playable business-game homage, GenMURK's multiplayer text world (its first build epic now closed), and Canonical Castles, the studio's newest addition, which counts castles by definition instead of by decree."
+updated: "2026-09-05"
